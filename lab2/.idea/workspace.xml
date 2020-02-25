@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="dc165680-8841-49f9-acfe-b23a655c173b" name="Default Changelist" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ProjectId" id="1XRTU5av61AAmhSxIgE9qSSOOgV" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/apps/q5/reaction_h2so4" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/apps/q5/reaction_h2so4" />
+      <recent name="$PROJECT_DIR$/apps/q5/reaction_so4" />
+      <recent name="$PROJECT_DIR$/apps/q5/reaction_h2o" />
+      <recent name="$PROJECT_DIR$/apps/q5/inj-so4" />
+      <recent name="$PROJECT_DIR$/apps/q5/makeprocs" />
+    </key>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
+  </component>
+  <component name="SvnConfiguration">
+    <configuration />
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dc165680-8841-49f9-acfe-b23a655c173b" name="Default Changelist" comment="" />
+      <created>1581007920080</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1581007920080</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="542" y="336" width="572" height="401" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1581015698792">
+      <screen x="0" y="28" width="1920" height="1018" />
+    </state>
+    <state x="542" y="336" width="572" height="401" key="#com.intellij.fileTypes.FileTypeChooser/0.28.1920.1018@0.28.1920.1018" timestamp="1581015698792" />
+    <state x="671" y="203" width="424" height="491" key="FileChooserDialogImpl" timestamp="1582415520505">
+      <screen x="0" y="27" width="1536" height="837" />
+    </state>
+    <state x="671" y="203" width="424" height="491" key="FileChooserDialogImpl/0.27.1536.837@0.27.1536.837" timestamp="1582415520505" />
+    <state x="501" y="303" width="664" height="342" key="com.intellij.ide.util.TipDialog" timestamp="1582415507711">
+      <screen x="0" y="27" width="1536" height="837" />
+    </state>
+    <state x="501" y="303" key="com.intellij.ide.util.TipDialog/0.27.1536.837@0.27.1536.837" timestamp="1582415507711" />
+    <state x="626" y="374" key="com.intellij.ide.util.TipDialog/0.27.1920.1053@0.27.1920.1053" timestamp="1581877828063" />
+    <state x="626" y="341" width="664" height="342" key="com.intellij.ide.util.TipDialog/0.27.1920.942@0.27.1920.942" timestamp="1582062160589" />
+    <state x="501" y="293" key="com.intellij.ide.util.TipDialog/0.28.1536.802@0.28.1536.802" timestamp="1581565361632" />
+    <state x="626" y="364" key="com.intellij.ide.util.TipDialog/0.28.1920.1018/1920.0.1920.1080@0.28.1920.1018" timestamp="1581814593354" />
+    <state x="626" y="364" key="com.intellij.ide.util.TipDialog/0.28.1920.1018@0.28.1920.1018" timestamp="1581008007395" />
+  </component>
+</project>

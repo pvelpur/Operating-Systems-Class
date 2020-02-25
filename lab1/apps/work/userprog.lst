@@ -1,0 +1,131 @@
+ line   address	contents
+    1                      ; Linked by DLX-LD.
+    2                      ; MemSize 20480
+    3                      ; Data size: 14
+    4                      ; Text size: 180
+    5                      ; Stack size: 8192
+    6  00000000          	.text 0x1000
+    7  00001000          	.data 0x2000
+    8                      ; Compiled by GCC
+   10  00002000          	.align 2
+   11  00002000          	LC0_LF0:
+   12  00002000  48656c6c	.ascii "Hello World!\n\000"
+   12  00002004  6f20576f	
+   12  00002008  726c6421	
+   12  0000200c  0a00    	
+   13  0000200e          	.text
+   14  00001000          	.align 2
+   15  00001000          	.proc _main
+   16  00001000          	.global _main
+   17  00001000          	_main:
+   18                      ;  Function 'main'; 0 bytes of locals, 0 regs to save.
+   19  00001000  afbefffc	sw	-4(r29),r30; push fp
+   20  00001004  001df020	add	r30,r0,r29; fp = sp
+   21  00001008  afbffff8	sw	-8(r29),r31; push ret addr
+   22  0000100c  2fbd0008	subui	r29,r29,#8; alloc local storage
+   23  00001010  0c000098	jal	___main
+   24  00001014  54000000	nop; not filled.
+   25  00001018  23bdfff8	addi	r29,r29,#-8
+   26  0000101c  3c020000	lhi	r2,((LC0_LF0)>>16)&0xffff
+   27  00001020  24422000	addui	r2,r2,(LC0_LF0)&0xffff
+   28  00001024  afa20000	sw	(r29),r2
+   29  00001028  0c00005c	jal	_Printf
+   30  0000102c  54000000	nop; not filled.
+   31  00001030  0c000060	jal	_Getpid
+   32  00001034  54000000	nop; not filled.
+   33  00001038  23bd0008	addi	r29,r29,#8
+   34  0000103c          	L7_LF0:
+   35  0000103c  0bfffffc	j	L7_LF0
+   36  00001040  54000000	nop; not filled.
+   37  00001044  0c000058	jal	_exit
+   38  00001048  54000000	nop
+   39  0000104c          	.endproc _main
+   40                      ;;;
+   41                      ;;; Stub functions for DLX traps.
+   42                      ;;;
+   43                      ;;; Ethan L. Miller, 1999.  Released to the public domain.
+   44                      ;;;
+   45                      ;;; The traps such as Open and Close
+   46                      ;;; (note the capital letters) are for use by user programs.  The traps
+   47                      ;;; with names such as open and close (lower case) are for use by the OS.
+   48                      ;;;
+   51  0000104c          	.align 2
+   53                      ;;; The following are the traps to be used by user-level programs
+   54                      ;;;
+   56  0000104c          	.align 2
+   57  0000104c          	.proc _Open
+   58  0000104c          	.global _Open
+   59  0000104c          	_Open:
+   60                      ;;; Note that trap #0x213 actually causes a trap vector in the OS of
+   61                      ;;; 0x1213.  The same is true for other user traps.  Thus, a user trap
+   62                      ;;; with trap #0x240 will result in a trap vector of 0x1240 in the OS.
+   63  0000104c  44000213	trap	#0x213
+   64  00001050  4be00000	jr	r31
+   65  00001054  54000000	nop
+   66  00001058          	.endproc _Open
+   68  00001058          	.proc _Close
+   69  00001058          	.global _Close
+   70  00001058          	_Close:
+   71  00001058  44000214	trap	#0x214
+   72  0000105c  4be00000	jr	r31
+   73  00001060  54000000	nop
+   74  00001064          	.endproc _Close
+   76  00001064          	.proc _Read
+   77  00001064          	.global _Read
+   78  00001064          	_Read:
+   79  00001064  44000210	trap	#0x210
+   80  00001068  4be00000	jr	r31
+   81  0000106c  54000000	nop
+   82  00001070          	.endproc _Read
+   84  00001070          	.proc _Write
+   85  00001070          	.global _Write
+   86  00001070          	_Write:
+   87  00001070  44000211	trap	#0x211
+   88  00001074  4be00000	jr	r31
+   89  00001078  54000000	nop
+   90  0000107c          	.endproc _Write
+   92  0000107c          	.proc _Lseek
+   93  0000107c          	.global _Lseek
+   94  0000107c          	_Lseek:
+   95  0000107c  44000212	trap	#0x212
+   96  00001080  4be00000	jr	r31
+   97  00001084  54000000	nop
+   98  00001088          	.endproc _Lseek
+  100  00001088          	.proc _Printf
+  101  00001088          	.global _Printf
+  102  00001088          	_Printf:
+  103  00001088  44000201	trap	#0x201
+  104  0000108c  4be00000	jr	r31
+  105  00001090  54000000	nop
+  106  00001094          	.endproc _Printf
+  107  00001094          	.global _Getpid
+  108  00001094          	_Getpid:
+  109  00001094  44000440	trap	#0x440
+  110  00001098  4be00000	jr	r31
+  111  0000109c  54000000	nop
+  112  000010a0          	.endproc _Getpid
+  113                      ;;; Ethan L. Miller, 1999.  Released to the public domain
+  114                      ;;;
+  115                      ;;; Most of the traps are called in files from libtraps.
+  118  000010a0          	.align 2
+  119  000010a0          	.proc _exit
+  120  000010a0          	.global _exit
+  121  000010a0          	_exit:
+  122  000010a0  44000300	trap	#0x300
+  123  000010a4  4be00000	jr	r31
+  124  000010a8  54000000	nop
+  125  000010ac          	.endproc _exit
+  127                      ; for the benefit of gcc.
+  128  000010ac          	.proc ___main
+  129  000010ac          	.global ___main
+  130  000010ac          	___main:
+  131  000010ac  4be00000	jr	r31
+  132  000010b0  54000000	nop
+  133  000010b4          	.endproc ___main
+  134  000010b4          	.text
+  135  000010b4          	.global _etext
+  136  000010b4          	_etext:
+  137  000010b4          	.align 3
+  138  000010b8          	.data
+  139  0000200e          	.global _edata
+  140  0000200e          	_edata:
