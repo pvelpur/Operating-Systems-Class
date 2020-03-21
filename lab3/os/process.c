@@ -121,7 +121,7 @@ void ProcessFreeResources (PCB *pcb) {
   // Your code for closing any open mailbox connections
   // that a dying process might have goes here.
   //-----------------------------------------------------
-
+  MboxCloseAllByPid(GetPidFromAddress(pcb));
 
   // Allocate a new link for this pcb on the freepcbs queue
   if ((pcb->l = AQueueAllocLink(pcb)) == NULL) {
@@ -837,7 +837,8 @@ void main (int argc, char *argv[])
   dbprintf ('i', "After initializing queues.\n");
   MemoryModuleInit ();
   dbprintf ('i', "After initializing memory.\n");
-
+  MboxModuleInit();
+  dbprintf ('i', "After initializing mbox.\n");
   ProcessModuleInit ();
   dbprintf ('i', "After initializing processes.\n");
   ShareModuleInit ();

@@ -23,6 +23,9 @@ typedef struct mbox {
     Queue msgs;
     int inuse;
     lock_t lock;
+    cond_t notFull;
+    cond_t notEmpty;
+    int numProcs; // Tracks how many processes are still active
     int pids[PROCESS_MAX_PROCS];
 } mbox;
 

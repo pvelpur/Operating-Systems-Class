@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e9713f18-777f-417d-8d7d-d51fc666eb99" name="Default Changelist" comment="" />
+    <list default="true" id="e9713f18-777f-417d-8d7d-d51fc666eb99" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/apps/q2/Makerules" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/makeprocs.dlx.obj" beforeDir="false" afterPath="$PROJECT_DIR$/bin/makeprocs.dlx.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/os.dlx.obj" beforeDir="false" afterPath="$PROJECT_DIR$/bin/os.dlx.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/os/mbox.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/os/mbox.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/mbox.c" beforeDir="false" afterPath="$PROJECT_DIR$/os/mbox.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/process.c" beforeDir="false" afterPath="$PROJECT_DIR$/os/process.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/mbox.o" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/mbox.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/os.dlx" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/os.dlx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/os.dlx.obj" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/os.dlx.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/os.lst" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/os.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/process.o" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/process.o" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
   <component name="ProjectId" id="1YBUbbkr5zNsjFnbOWrbligQGtk" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showExcludedFiles" value="true" />
@@ -15,7 +32,12 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/apps/q2" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/apps/q2" />
+    </key>
   </component>
   <component name="ServiceViewManager">
     <option name="viewStates">
@@ -41,5 +63,18 @@
       <updated>1582415553478</updated>
     </task>
     <servers />
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="36" y="256" key="com.intellij.ide.util.TipDialog" timestamp="1584820134539">
+      <screen x="0" y="27" width="1536" height="695" />
+    </state>
+    <state x="36" y="256" key="com.intellij.ide.util.TipDialog/0.27.1536.695@0.27.1536.695" timestamp="1584820134539" />
+    <state x="36" y="303" key="com.intellij.ide.util.TipDialog/0.27.1536.837/1920.2.1360.768@0.27.1536.837" timestamp="1584666109781" />
+    <state x="36" y="303" key="com.intellij.ide.util.TipDialog/0.27.1536.837@0.27.1536.837" timestamp="1584718847712" />
+    <state x="45" y="364" key="com.intellij.ide.util.TipDialog/0.28.1920.1018@0.28.1920.1018" timestamp="1582822476872" />
+    <state x="612" y="111" width="696" height="852" key="find.popup" timestamp="1583428057503">
+      <screen x="0" y="28" width="1920" height="1018" />
+    </state>
+    <state x="612" y="111" width="696" height="852" key="find.popup/0.28.1920.1018@0.28.1920.1018" timestamp="1583428057503" />
   </component>
 </project>
