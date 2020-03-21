@@ -121,24 +121,24 @@ void main (int argc, char *argv[])
     for(i=0; i<numprocs; i++) {
         if(i < n_s2)
         {
-            process_create(FILENAME_INJS2, 0, 0, s_procs_completed_str, m_s2_str, NULL);
+            process_create(FILENAME_INJS2, 0, 1, s_procs_completed_str, m_s2_str, NULL);
             Printf("makeprocs (%d): Process %d created\n", getpid(), i);
         }
         if(i < n_co)
         {
-            process_create(FILENAME_INJCO, 0, 0, s_procs_completed_str, m_co_str, NULL);
+            process_create(FILENAME_INJCO, 0, 1, s_procs_completed_str, m_co_str, NULL);
             Printf("makeprocs (%d): Process %d created\n", getpid(), i);
         }
         if(i < n_s2){
-            process_create(FILENAME_R2, 0, 0, s_procs_completed_str, m_s2_str, m_s_str, NULL);
+            process_create(FILENAME_R2, 0, 1, s_procs_completed_str, m_s2_str, m_s_str, NULL);
             Printf("makeprocs (%d): Process %d created\n", getpid(), i);
         }
         if(i < (n_co/4)){
-            process_create(FILENAME_R1, 0, 0, s_procs_completed_str, m_co_str, m_o2_str, NULL);
+            process_create(FILENAME_R1, 0, 1, s_procs_completed_str, m_co_str, m_o2_str, NULL);
             Printf("makeprocs (%d): Process %d created\n", getpid(), i);
         }
         if(i < n_so4){
-            process_create(FILENAME_R3, 0, 0, s_procs_completed_str, m_s_str, m_o2_str, m_so4_str, NULL);
+            process_create(FILENAME_R3, 0, 1, s_procs_completed_str, m_s_str, m_o2_str, m_so4_str, NULL);
             Printf("makeprocs (%d): Process %d created\n", getpid(), i);
         }
 

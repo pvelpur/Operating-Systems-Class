@@ -78,6 +78,10 @@ void ProcessModuleInit () {
       exitsim();
     }
     // Next, set the pcb to be available
+    pcbs[i].runtime = 0;
+    pcbs[i].switchedtime = 0;
+    pcbs[i].wakeuptime = 0;
+    pcbs[i].sleeptime = 0;
     pcbs[i].flags = PROCESS_STATUS_FREE;
     // Finally, insert the link into the queue
     if (AQueueInsertFirst(&freepcbs, pcbs[i].l) != QUEUE_SUCCESS) {
@@ -197,6 +201,13 @@ void ProcessSchedule () {
   PCB *pcb=NULL;
   int i=0;
   Link *l=NULL;
+  int Jiffies;
+
+  Jiffies = ClkGetCurJiffies() - currentPCB->switchedtime;
+  currentPCB->runtime += Jiffies;
+  if(currentPCB->pinfo == 1) {
+    printf(PROCESS_CPUSTATS_FORMAT, GetCurrentPid(), currentPCB->runtime, 0);
+  }
 
   dbprintf ('p', "Now entering ProcessSchedule (cur=0x%x, %d ready)\n",
 	    (int)currentPCB, AQueueLength (&runQueue));
@@ -224,6 +235,8 @@ void ProcessSchedule () {
   // Now, run the one at the head of the queue.
   pcb = (PCB *)AQueueObject(AQueueFirst(&runQueue));
   currentPCB = pcb;
+  currentPCB->switchedtime = ClkGetCurJiffies();
+
   dbprintf ('p',"About to switch to PCB 0x%x,flags=0x%x @ 0x%x\n",
 	    (int)pcb, pcb->flags, (int)(pcb->sysStackPtr[PROCESS_STACK_IAR]));
 
@@ -406,6 +419,9 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
   // Copy the process name into the PCB.
   dbprintf('p', "ProcessFork: Copying process name (%s) to pcb\n", name);
   dstrcpy(pcb->name, name);
+
+  pcb->pinfo = pinfo;
+  //also set pnice later
 
   //----------------------------------------------------------------------
   // This section initializes the memory for this process

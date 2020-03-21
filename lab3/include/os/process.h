@@ -43,6 +43,10 @@ typedef struct PCB {
   int		npages;		// Number of pages allocated to this process
   Link		*l;		// Used for keeping PCB in queues
 
+  //Parts 3-5
+  int runtime; //cummulative time (?) total elasped time
+  int switchedtime, wakeuptime, sleeptime;
+
   int           pinfo;          // Turns on printing of runtime stats
   int           pnice;          // Used in priority calculation
 } PCB;
@@ -90,5 +94,15 @@ int GetPidFromAddress(PCB *pcb);
 
 void ProcessUserSleep(int seconds);
 void ProcessYield();
+
+// Part 3-5 User defined
+#define NUMBER_RUN_QUEUES 32
+#define PRIORITIES_PER_QUEUE 4
+#define BASE_PRIORITY_FOR_USER 50
+#define MAX_PRIORITIES_FOR USER 127
+#define CPU_WINDOWS_BETWEEN_DECAYS 10
+
+//Need to change maybe
+#define NUM_JIFFIES_UNTIL_DECAY 100
 
 #endif	/* __process_h__ */

@@ -2,14 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e9713f18-777f-417d-8d7d-d51fc666eb99" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/apps/q2/Makerules" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/makeprocs.dlx.obj" beforeDir="false" afterPath="$PROJECT_DIR$/bin/makeprocs.dlx.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/example/makeprocs/makeprocs.c" beforeDir="false" afterPath="$PROJECT_DIR$/apps/example/makeprocs/makeprocs.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/q2/makeprocs/makeprocs.c" beforeDir="false" afterPath="$PROJECT_DIR$/apps/q2/makeprocs/makeprocs.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/os.dlx.obj" beforeDir="false" afterPath="$PROJECT_DIR$/bin/os.dlx.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/os/mbox.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/os/mbox.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/os/mbox.c" beforeDir="false" afterPath="$PROJECT_DIR$/os/mbox.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include/os/process.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/os/process.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/os/process.c" beforeDir="false" afterPath="$PROJECT_DIR$/os/process.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/os/work/mbox.o" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/mbox.o" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/os/work/os.dlx" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/os.dlx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/os/work/os.dlx.obj" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/os.dlx.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/os/work/os.lst" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/os.lst" afterDir="false" />
