@@ -17,6 +17,7 @@
 #include "share_memory.h"
 #include "mbox.h"
 #include "clock.h"
+#include "queue.h"
 
 // Pointer to the current PCB.  This is used by the assembly language
 // routines for context switches.
@@ -27,7 +28,7 @@ static Queue	freepcbs;
 
 // List of processes that are ready to run (ie, not waiting for something
 // to happen).
-static Queue	runQueue;
+static Queue	runQueue[NUMBER_RUN_QUEUES];
 
 // List of processes that are waiting for something to happen.  There's no
 // reason why this must be a single list; there could be many lists for many
@@ -66,7 +67,7 @@ void ProcessModuleInit () {
 
   dbprintf ('p', "ProcessModuleInit: function started\n");
   AQueueInit (&freepcbs);
-  AQueueInit(&runQueue);
+  for (i=0;i<NUMBER_RUN_QUEUES;i++){AQueueInit(&runQueue[i]);}
   AQueueInit (&waitQueue);
   AQueueInit (&zombieQueue);
   // For each PCB slot in the global pcbs array:
@@ -209,8 +210,8 @@ void ProcessSchedule () {
     printf(PROCESS_CPUSTATS_FORMAT, GetCurrentPid(), currentPCB->runtime, 0);
   }
 
-  dbprintf ('p', "Now entering ProcessSchedule (cur=0x%x, %d ready)\n",
-	    (int)currentPCB, AQueueLength (&runQueue));
+  dbprintf ('p', "Now entering ProcessSchedule (cur=0x%x)\n",
+	    (int)currentPCB); //, AQueueLength (&runQueue)
   // The OS exits if there's no runnable process.  This is a feature, not a
   // bug.  An easy solution to allowing no runnable "user" processes is to
   // have an "idle" process that's simply an infinite loop.
@@ -312,10 +313,13 @@ void ProcessWakeup (PCB *wakeup) {
     printf("FATAL ERROR: could not get link for wakeup PCB in ProcessWakeup!\n");
     exitsim();
   }
+
+  /* Change this
   if (AQueueInsertLast(&runQueue, wakeup->l) != QUEUE_SUCCESS) {
     printf("FATAL ERROR: could not insert link into runQueue in ProcessWakeup!\n");
     exitsim();
   }
+  */
 }
 
 
@@ -422,6 +426,7 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
 
   pcb->pinfo = pinfo;
   //also set pnice later
+  pcb->pnice = pnice;
 
   //----------------------------------------------------------------------
   // This section initializes the memory for this process
@@ -973,6 +978,87 @@ int GetPidFromAddress(PCB *pcb) {
   return (int)(pcb - pcbs);
 }
 
+// PART 4 HELPER FUNCTION CODES
+//--------------------------------------------------------
+void ProcessRecalcPriority(PCB *pcb){
+    if(pcb->runtime >= PROCESS_QUANTUM_JIFFIES){
+        pcb->estcpu++;
+    }
+    // Check whether this is a user process or a kernel process
+    if((pcb->flags & PROCESS_TYPE_USER) == PROCESS_TYPE_USER){
+        pcb->priority = BASE_PRIORITY_FOR_USER + pcb->estcpu / 4 + 2 * pcb->pnice;
+    }
+    else{
+        pcb->priority = BASE_PRIORITY_FOR_KERNEL + pcb->estcpu / 4 + 2 * pcb->pnice;
+    }
+}
+
+inline int WhichQueue(PCB *pcb){
+    return pcb->priority / PRIORITIES_PER_QUEUE;
+}
+
+int ProcessInsertRunning(PCB *pcb){
+    if (AQueueInsertLast(&runQueue[WhichQueue(pcb)], pcb->l) != QUEUE_SUCCESS) {
+        printf("FATAL ERROR: Could not insert into queue (ProcessInsertRunning)\n");
+        exitsim();
+    }
+    return QUEUE_SUCCESS;
+}
+
+void ProcessDecayEstcpu(PCB *pcb){
+
+    pcb->estcpu = (pcb->estcpu * (2.0/ 3.0)) + pcb->pnice;
+    // Call recalculation of priority ?
+}
+
+void ProcessDecayEstcpuSleep(PCB *pcb, int time_asleep_jiffies){
+    int num_windows_asleep;
+    // using jiffies
+    if(time_asleep_jiffies >= NUM_JIFFIES_UNTIL_DECAY) {
+        num_windows_asleep = time_asleep_jiffies / NUM_JIFFIES_UNTIL_DECAY;
+        pcb->estcpu = pcb->estcpu * power((2.0 / 3.0), num_windows_asleep);
+    }
+}
+
+PCB *ProcessFindHighestPriorityPCB() {
+    int i;
+    for (i = 0; i < NUMBER_RUN_QUEUES; i++) {
+        if(!AQueueEmpty(&runQueue[i])){
+            return AQueueObject(AQueueFirst(&runQueue[i]));
+        }
+    }
+    return NULL;
+}
+
+void ProcessDecayAllEstcpus() {
+    int i;
+    Link* l;
+    PCB* pcb;
+    for (i = 0; i < NUMBER_RUN_QUEUES; i++) {
+        if(!AQueueEmpty(&runQueue[i])) {
+            l = AQueueFirst(&runQueue[i]);
+            while(l != NULL){
+                pcb = AQueueObject(l);
+                ProcessDecayEstcpu(pcb);
+                ProcessRecalcPriority(pcb);
+                l = AQueueNext(l);
+            }
+        }
+    }
+}
+
+void ProcessFixRunQueues(){
+
+}
+
+int ProcessCountAutowake(){}
+
+void ProcessPrintRunQueues(){
+
+}
+
+//--------------------------------------------------------
+
 //--------------------------------------------------------
 // ProcessSleep assumes that it will be immediately 
 // followed by a call to ProcessSchedule (in traps.c).
@@ -988,4 +1074,14 @@ void ProcessUserSleep(int seconds) {
 //-----------------------------------------------------
 void ProcessYield() {
   // Your code here
+}
+
+double power(double base, int exp) {
+    int i;
+    double total;
+    total = 1;
+    for (i = 0; i < exp; i++){
+        total = total * base;
+    }
+    return total;
 }

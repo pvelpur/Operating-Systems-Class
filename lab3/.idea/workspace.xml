@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="e9713f18-777f-417d-8d7d-d51fc666eb99" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/example/makeprocs/makeprocs.c" beforeDir="false" afterPath="$PROJECT_DIR$/apps/example/makeprocs/makeprocs.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/q2/makeprocs/makeprocs.c" beforeDir="false" afterPath="$PROJECT_DIR$/apps/q2/makeprocs/makeprocs.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/bin/os.dlx.obj" beforeDir="false" afterPath="$PROJECT_DIR$/bin/os.dlx.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/os/process.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/os/process.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/os/process.c" beforeDir="false" afterPath="$PROJECT_DIR$/os/process.c" afterDir="false" />
@@ -70,9 +68,17 @@
     <state x="36" y="303" key="com.intellij.ide.util.TipDialog/0.27.1536.837/1920.2.1360.768@0.27.1536.837" timestamp="1584666109781" />
     <state x="36" y="303" key="com.intellij.ide.util.TipDialog/0.27.1536.837@0.27.1536.837" timestamp="1584718847712" />
     <state x="45" y="364" key="com.intellij.ide.util.TipDialog/0.28.1920.1018@0.28.1920.1018" timestamp="1582822476872" />
+    <state x="847" y="27" width="487" height="695" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1584840591833">
+      <screen x="0" y="27" width="1536" height="695" />
+    </state>
+    <state x="847" y="27" width="487" height="695" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.27.1536.695@0.27.1536.695" timestamp="1584840591833" />
     <state x="612" y="111" width="696" height="852" key="find.popup" timestamp="1583428057503">
       <screen x="0" y="28" width="1920" height="1018" />
     </state>
     <state x="612" y="111" width="696" height="852" key="find.popup/0.28.1920.1018@0.28.1920.1018" timestamp="1583428057503" />
+    <state x="758" y="43" width="672" height="678" key="search.everywhere.popup" timestamp="1584846280001">
+      <screen x="0" y="27" width="1536" height="695" />
+    </state>
+    <state x="758" y="43" width="672" height="678" key="search.everywhere.popup/0.27.1536.695@0.27.1536.695" timestamp="1584846280001" />
   </component>
 </project>
