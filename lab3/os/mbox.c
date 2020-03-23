@@ -337,6 +337,7 @@ int MboxCloseAllByPid(int pid) {
         }
 
         mboxes[i].pids[pid] = 0;
+        mboxes[i].numProcs -= 1;
 
         //If no other process using the box, then mark not in use
         if(mboxes[i].numProcs == 0) {

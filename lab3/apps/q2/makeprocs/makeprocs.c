@@ -148,7 +148,7 @@ void main (int argc, char *argv[])
     Printf("Bad semaphore s_procs_completed (%d) in ", s_procs_completed); Printf(argv[0]); Printf("\n");
     Exit();
   }
-  if (mbox_open(m_co) == SYNC_FAIL) {
+  if (mbox_close(m_co) == SYNC_FAIL) {
     Printf("Bad mbox_close in "); Printf(argv[0]); Printf("\n");
     Exit();
   }
