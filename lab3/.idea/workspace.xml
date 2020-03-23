@@ -3,10 +3,14 @@
   <component name="ChangeListManager">
     <list default="true" id="e9713f18-777f-417d-8d7d-d51fc666eb99" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/q2/makeprocs/makeprocs.c" beforeDir="false" afterPath="$PROJECT_DIR$/apps/q2/makeprocs/makeprocs.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/os.dlx.obj" beforeDir="false" afterPath="$PROJECT_DIR$/bin/os.dlx.obj" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/include/os/process.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/os/process.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/os/mbox.c" beforeDir="false" afterPath="$PROJECT_DIR$/os/mbox.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/os/process.c" beforeDir="false" afterPath="$PROJECT_DIR$/os/process.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/mbox.o" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/mbox.o" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/os.dlx" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/os.dlx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/os.dlx.obj" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/os.dlx.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/os.lst" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/os.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/process.o" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/process.o" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,9 +77,10 @@
       <screen x="0" y="28" width="1920" height="1018" />
     </state>
     <state x="612" y="111" width="696" height="852" key="find.popup/0.28.1920.1018@0.28.1920.1018" timestamp="1583428057503" />
-    <state x="758" y="43" width="672" height="678" key="search.everywhere.popup" timestamp="1584846280001">
-      <screen x="0" y="27" width="1536" height="695" />
+    <state x="413" y="43" width="672" height="665" key="search.everywhere.popup" timestamp="1584992883385">
+      <screen x="0" y="27" width="837" height="681" />
     </state>
     <state x="758" y="43" width="672" height="678" key="search.everywhere.popup/0.27.1536.695@0.27.1536.695" timestamp="1584846280001" />
+    <state x="413" y="43" width="672" height="665" key="search.everywhere.popup/0.27.837.681@0.27.837.681" timestamp="1584992883385" />
   </component>
 </project>

@@ -26,9 +26,8 @@
 #define	PROCESS_STATUS_WAITING	0x4
 #define	PROCESS_STATUS_STARTING	0x8
 #define	PROCESS_STATUS_ZOMBIE	0x10
-#define PROCESS_STATUS_IDLE 0x20
-#define PROCESS_STATUS_AUTOWAKE 0x40
-#define PROCESS_STATUS_YIELD 0x80
+#define PROCESS_STATUS_AUTOWAKE 0x20
+#define PROCESS_STATUS_YIELD 0x40
 #define	PROCESS_STATUS_MASK	0x3f
 #define	PROCESS_TYPE_SYSTEM	0x100
 #define	PROCESS_TYPE_USER	0x200
@@ -52,6 +51,7 @@ typedef struct PCB {
 
   int priority;
   double estcpu;
+  int quantaCount;
 
   int           pinfo;          // Turns on printing of runtime stats
   int           pnice;          // Used in priority calculation
@@ -111,7 +111,7 @@ void ProcessYield();
 
 //Need to change maybe
 #define NUM_JIFFIES_UNTIL_DECAY 100
-
+/*
 void ProcessRecalcPriority(PCB *pcb);
 inline int WhichQueue(PCB *pcb);
 int ProcessInsertRunning(PCB *pcb);
@@ -122,6 +122,8 @@ void ProcessDecayAllEstcpus();
 void ProcessFixRunQueues();
 int ProcessCountAutowake();
 void ProcessPrintRunQueues();
+*/
+void ProcessIdle();
 
 double power(double base, int exp);
 
