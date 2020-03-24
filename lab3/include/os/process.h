@@ -52,10 +52,7 @@ typedef struct PCB {
   int priority;
   double estcpu;
   int quantaCount;
-<<<<<<< HEAD
-=======
   int isidle;
->>>>>>> Rajat_dev
 
   int           pinfo;          // Turns on printing of runtime stats
   int           pnice;          // Used in priority calculation
@@ -115,21 +112,6 @@ void ProcessYield();
 
 //Need to change maybe
 #define NUM_JIFFIES_UNTIL_DECAY 100
-/*
-void ProcessRecalcPriority(PCB *pcb);
-inline int WhichQueue(PCB *pcb);
-int ProcessInsertRunning(PCB *pcb);
-void ProcessDecayEstcpu(PCB *pcb);
-void ProcessDecayEstcpuSleep(PCB *pcb, int time_asleep_jiffies);
-PCB *ProcessFindHighestPriorityPCB();
-void ProcessDecayAllEstcpus();
-void ProcessFixRunQueues();
-int ProcessCountAutowake();
-void ProcessPrintRunQueues();
-*/
-void ProcessIdle();
-
-double power(double base, int exp);
 
 void ProcessRecalcPriority(PCB *pcb);
 inline int WhichQueue(PCB *pcb);

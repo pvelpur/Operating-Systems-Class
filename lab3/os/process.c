@@ -17,17 +17,12 @@
 #include "share_memory.h"
 #include "mbox.h"
 #include "clock.h"
-#include "queue.h"
 
 // Pointer to the current PCB.  This is used by the assembly language
 // routines for context switches.
 PCB		*currentPCB;
 
-<<<<<<< HEAD
-// Pointer to the Idle PCB
-=======
 //Pointer to the IdlePCB
->>>>>>> Rajat_dev
 PCB *idlePCB;
 
 // List of free PCBs.
@@ -35,13 +30,8 @@ static Queue	freepcbs;
 
 // List of processes that are ready to run (ie, not waiting for something
 // to happen).
-<<<<<<< HEAD
-//static Queue	runQueue[NUMBER_RUN_QUEUES];
-static Queue	runQueue;
-=======
 static Queue	runQueue; //original Round robin
 static Queue    runQueues[NUMBER_RUN_QUEUES];
->>>>>>> Rajat_dev
 
 // List of processes that are waiting for something to happen.  There's no
 // reason why this must be a single list; there could be many lists for many
@@ -80,7 +70,6 @@ void ProcessModuleInit () {
 
   dbprintf ('p', "ProcessModuleInit: function started\n");
   AQueueInit (&freepcbs);
-  //for (i=0;i<NUMBER_RUN_QUEUES;i++){AQueueInit(&runQueue[i]);}
   AQueueInit(&runQueue);
   for(i = 0; i < NUMBER_RUN_QUEUES; i++) { AQueueInit (&runQueues[i]); }
   AQueueInit (&waitQueue);
@@ -215,16 +204,6 @@ void ProcessSetResult (PCB * pcb, uint32 result) {
 //----------------------------------------------------------------------
 void ProcessSchedule () {
   PCB *pcb=NULL;
-<<<<<<< HEAD
-  int i=0;
-  Link *l=NULL;
-  //int num_autoawake;
-  int Jiffies;
-  //int queueNum;
-
-  dbprintf ('p', "Now entering ProcessSchedule (cur=0x%x)\n",
-	    (int)currentPCB); //, AQueueLength (&runQueue)
-=======
   PCB* hpPCB=NULL;
   //int i=0; //OLD STUFFS
   //Link *l=NULL;
@@ -234,7 +213,6 @@ void ProcessSchedule () {
 
   dbprintf ('p', "Now entering ProcessSchedule (cur=0x%x ready)\n",
 	    (int)currentPCB);
->>>>>>> Rajat_dev
 
   // update current PCB runtime (cumulative)
   Jiffies = ClkGetCurJiffies() - currentPCB->switchedtime;
@@ -293,8 +271,6 @@ void ProcessSchedule () {
         // last estcpu decay time = current time (?)
     }
 
-<<<<<<< HEAD
-=======
     // wake up sleeping processes that need to be woken up (part 5)
 
     // Find highest priority pcb
@@ -311,12 +287,9 @@ void ProcessSchedule () {
     /*------------------OLD CODE------------------
   dbprintf ('p', "Now entering ProcessSchedule (cur=0x%x, %d ready)\n",
 	    (int)currentPCB, AQueueLength (&runQueue));
->>>>>>> Rajat_dev
   // The OS exits if there's no runnable process.  This is a feature, not a
   // bug.  An easy solution to allowing no runnable "user" processes is to
   // have an "idle" process that's simply an infinite loop.
-
-  // OLD CODE, NEED TO IMPLEMENT BETTER SCHEDULING
   if (AQueueEmpty(&runQueue)) {
     if (!AQueueEmpty(&waitQueue)) {
       printf("FATAL ERROR: no runnable processes, but there are sleeping processes waiting!\n");
@@ -334,65 +307,6 @@ void ProcessSchedule () {
     --------------ONE PORTION END OLD CODE -----------*/
     //-------------NEW CODE CPY AND PASTE SWITCHING TO RUNQUES ----------
 
-<<<<<<< HEAD
-
-   //Move the front of the queue to the end.  The running process was the one in front.
-       AQueueMoveAfter(&runQueue, AQueueLast(&runQueue), AQueueFirst(&runQueue));
-
-  // NEW IMPLEMENTATION
-  /*
-  pcb = ProcessFindHighestPriorityPCB();
-  if (pcb == idlePCB){
-    num_autoawake = ProcessCountAutowake();
-    if(num_autoawake == 0){
-        exitsim();
-    }
-    //move pcb to back of bottom queue
-    pcb->priority = 127;
-    AQueueRemove(&pcb->l);
-    pcb->l = AQueueAllocLink(pcb);
-    ProcessInsertRunning(pcb);
-  }
-
-  currentPCB->quantaCount += 1;
-
-  if(currentPCB->flags & (PROCESS_STATUS_RUNNABLE | PROCESS_STATUS_YIELD)){
-    AQueueRemove(&currentPCB->l);
-    if(currentPCB->flags & PROCESS_STATUS_YIELD) {
-        currentPCB->flags &= ~PROCESS_STATUS_YIELD;
-        ProcessSetStatus(currentPCB, PROCESS_STATUS_RUNNABLE);
-    }
-    else{
-        ProcessDecayEstcpu(currentPCB);
-    }
-    queueNum = WhichQueue(currentPCB);
-    ProcessRecalcPriority(currentPCB);
-    ProcessInsertRunning(currentPCB);
-  }
-
-  // have no idea if this is correct or not
-  //decay estcpu if current time > estcpu decay time
-  if(currentPCB->quantaCount > CPU_WINDOWS_BETWEEN_DECAYS){
-    currentPCB->quantaCount = 0;
-    ProcessDecayAllEstcpus();
-    ProcessFixRunQueues();
-  }
-
-  pcb = ProcessFindHighestPriorityPCB();
-
-  if(currentPCB == pcb){
-    AQueueRemove(&currentPCB->l);
-    queueNum = WhichQueue(currentPCB);
-    currentPCB->l = AQueueAllocLink(currentPCB);
-    AQueueInsertLast(&runQueue[queueNum], currentPCB->l);
-  }
-
-  pcb = ProcessFindHighestPriorityPCB();
-
-  // Now, run the one at the head of the queue.
-  //pcb = (PCB *)AQueueObject(AQueueFirst(&runQueue));
-  currentPCB = pcb;
-=======
   // Move the front of the queue to the end.  The running process was the one in front.
   // AQueueMoveAfter(&runQueue, AQueueLast(&runQueue), AQueueFirst(&runQueue)); //OLD CODE
 
@@ -400,9 +314,7 @@ void ProcessSchedule () {
   //pcb = (PCB *)AQueueObject(AQueueFirst(&runQueue)); // OLD CODE
 
   currentPCB = hpPCB;
->>>>>>> Rajat_dev
   currentPCB->switchedtime = ClkGetCurJiffies();
-  */
 
   dbprintf ('p',"About to switch to PCB 0x%x,flags=0x%x @ 0x%x\n",
 	    (int)pcb, pcb->flags, (int)(pcb->sysStackPtr[PROCESS_STACK_IAR]));
@@ -440,12 +352,7 @@ void ProcessSuspend (PCB *suspend) {
   ASSERT (suspend->flags & PROCESS_STATUS_RUNNABLE, "Trying to suspend a non-running process!\n");
   ProcessSetStatus (suspend, PROCESS_STATUS_WAITING);
 
-<<<<<<< HEAD
-  suspend->runtime += ClkGetCurJiffies() - currentPCB->switchedtime;
   suspend->sleeptime = ClkGetCurJiffies();
-=======
-  suspend.sleeptime = ClkGetCurJiffies();
->>>>>>> Rajat_dev
 
   if (AQueueRemove(&(suspend->l)) != QUEUE_SUCCESS) {
     printf("FATAL ERROR: could not remove process from run Queue in ProcessSuspend!\n");
@@ -476,11 +383,9 @@ void ProcessSuspend (PCB *suspend) {
 //
 //----------------------------------------------------------------------
 void ProcessWakeup (PCB *wakeup) {
-int intrs;
   dbprintf ('p',"Waking up PID %d.\n", (int)(wakeup - pcbs));
   // Make sure it's not yet a runnable process.
   ASSERT (wakeup->flags & PROCESS_STATUS_WAITING, "Trying to wake up a non-sleeping process!\n");
-
   ProcessSetStatus (wakeup, PROCESS_STATUS_RUNNABLE);
   //Remove from wakeup queue
   if (AQueueRemove(&(wakeup->l)) != QUEUE_SUCCESS) {
@@ -488,27 +393,6 @@ int intrs;
     exitsim();
   }
 
-<<<<<<< HEAD
-  intrs = DisableIntrs();
-  // Reset autoawake flag (?)
-  wakeup->flags &= ~PROCESS_STATUS_AUTOWAKE;
-
-  //decay estcpu proportional to amount od sleep time
-  wakeup->sleeptime = ClkGetCurJiffies() - wakeup->sleeptime;
-  //ProcessDecayEstcpuSleep(wakeup, wakeup->sleeptime);
-
-  //recalculate priority
-  //ProcessRecalcPriority(wakeup);
-
-  // insert to proper run queue
-  //if((ProcessInsertRunning(wakeup)) != QUEUE_SUCCESS) {
-    //printf("FATAL ERROR: could not insert into runqueue, in ProcessWakeup\n");
-    //exitsim();
-  //}
-  RestoreIntrs(intrs);
-
-  // Changed this to ProcessInsertRunning ^^
-=======
   // -------------------- NEW CODE -------------------------
   //Reset autowake flag
   wakeup->flags &= ~PROCESS_STATUS_AUTOWAKE;
@@ -521,7 +405,6 @@ int intrs;
   ProcessRecalcPriority(wakeup);
 
   //insert to proper run queue
->>>>>>> Rajat_dev
   if ((wakeup->l = AQueueAllocLink(wakeup)) == NULL) {
     printf("FATAL ERROR: could not get link for wakeup PCB in ProcessWakeup!\n");
     exitsim();
@@ -539,11 +422,7 @@ int intrs;
     printf("FATAL ERROR: could not insert link into runQueue in ProcessWakeup!\n");
     exitsim();
   }
-<<<<<<< HEAD
-
-=======
   -------------------------------------------------------------------------------*/
->>>>>>> Rajat_dev
 }
 
 
@@ -650,10 +529,7 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
 
   pcb->pinfo = pinfo;
   pcb->pnice = pnice;
-<<<<<<< HEAD
-=======
   //also set pnice later
->>>>>>> Rajat_dev
 
   //----------------------------------------------------------------------
   // This section initializes the memory for this process
@@ -754,7 +630,7 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
 			    SIZE_ARG_BUFF-32);
     offset = get_argument((char *)param);
 
-    dum[2] = MEMORY_PAGE_SIZE - SIZE_ARG_BUFF + offset; 
+    dum[2] = MEMORY_PAGE_SIZE - SIZE_ARG_BUFF + offset;
     for(count=3;;count++)
     {
       offset=get_argument(NULL);
@@ -796,12 +672,6 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
     pcb->flags |= PROCESS_TYPE_SYSTEM;
   }
 
-<<<<<<< HEAD
-  pcb->runtime = 0;
-
-  if (func == ProcessIdle) {
-    pcb->priority = MAX_PRIORITY;
-=======
   // ------------------------- NEW CODE ---------------------------
   // Initialize added pcb struct attributes
   pcb -> runtime = 0;
@@ -815,26 +685,12 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
   if (func == ProcessIdle) {
     pcb->priority = MAX_PRIORITY;
     pcb->isidle = 1;
->>>>>>> Rajat_dev
   } else {
     pcb->priority = BASE_PRIORITY_FOR_USER + 2*pnice; //There are no kernel processes in DLXOS
   }
 
-<<<<<<< HEAD
-  pcb->estcpu = 0;
-  pcb->quantaCount = 0;
-
-=======
   // Place PCB onto run queue
->>>>>>> Rajat_dev
   intrs = DisableIntrs ();
-  //if((ProcessInsertRunning(pcb)) != QUEUE_SUCCESS) {
-  //  printf("FATAL ERROR: could not insert into runqueue, in ProcessWakeup\n");
-  //  exitsim();
-  //}
-
-  // Place PCB onto run queue
-
   if ((pcb->l = AQueueAllocLink(pcb)) == NULL) {
     printf("FATAL ERROR: could not get link for forked PCB in ProcessFork!\n");
     exitsim();
@@ -850,11 +706,7 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
     printf("FATAL ERROR: could not insert link into runQueue in ProcessFork!\n");
     exitsim();
   }
-<<<<<<< HEAD
-
-=======
   ------------------------------------------------------------------------- */
->>>>>>> Rajat_dev
   RestoreIntrs (intrs);
 
   // If this is the first process, make it the current one
@@ -1069,7 +921,7 @@ void main (int argc, char *argv[])
   int base=0;
   int numargs=0;
   char *params[10]; // Maximum number of command-line parameters is 10
-  
+
   debugstr[0] = '\0';
 
   printf ("Got %d arguments.\n", argc);
@@ -1080,11 +932,11 @@ void main (int argc, char *argv[])
   }
 
   FsModuleInit ();
-  for (i = 0; i < argc; i++) 
+  for (i = 0; i < argc; i++)
   {
-    if (argv[i][0] == '-') 
+    if (argv[i][0] == '-')
     {
-      switch (argv[i][1]) 
+      switch (argv[i][1])
       {
       case 'D':
 	dstrcpy (debugstr, argv[++i]);
@@ -1106,9 +958,9 @@ void main (int argc, char *argv[])
 		codeL);
 	printf ("File %s -> data @ 0x%08x (size=0x%08x)\n", argv[i], dataS,
 		dataL);
-	while ((n = ProcessGetFromFile (fd, buf, &addr, sizeof (buf))) > 0) 
+	while ((n = ProcessGetFromFile (fd, buf, &addr, sizeof (buf))) > 0)
 	{
-	  for (j = 0; j < n; j += 4) 
+	  for (j = 0; j < n; j += 4)
 	  {
 	    printf ("%08x: %02x%02x%02x%02x\n", addr + j - n, buf[j], buf[j+1],
 		    buf[j+2], buf[j+3]);
@@ -1119,7 +971,7 @@ void main (int argc, char *argv[])
       }
       case 'u':
 	userprog = argv[++i];
-        base = i; // Save the location of the user program's name 
+        base = i; // Save the location of the user program's name
 	break;
       default:
 	printf ("Option %s not recognized.\n", argv[i]);
@@ -1165,17 +1017,17 @@ void main (int argc, char *argv[])
       case  2: process_create(params[0], params[1], NULL); break;
       case  3: process_create(params[0], params[1], params[2], NULL); break;
       case  4: process_create(params[0], params[1], params[2], params[3], NULL); break;
-      case  5: process_create(params[0], params[1], params[2], params[3], params[4], NULL); 
+      case  5: process_create(params[0], params[1], params[2], params[3], params[4], NULL);
                               break;
-      case  6: process_create(params[0], params[1], params[2], params[3], params[4], 
+      case  6: process_create(params[0], params[1], params[2], params[3], params[4],
                               params[5], NULL); break;
-      case  7: process_create(params[0], params[1], params[2], params[3], params[4], 
+      case  7: process_create(params[0], params[1], params[2], params[3], params[4],
                               params[5], params[6], NULL); break;
-      case  8: process_create(params[0], params[1], params[2], params[3], params[4], 
+      case  8: process_create(params[0], params[1], params[2], params[3], params[4],
                               params[5], params[6], params[7], NULL); break;
-      case  9: process_create(params[0], params[1], params[2], params[3], params[4], 
+      case  9: process_create(params[0], params[1], params[2], params[3], params[4],
                               params[5], params[6], params[7], params[8], NULL); break;
-      case 10: process_create(params[0], params[1], params[2], params[3], params[4], 
+      case 10: process_create(params[0], params[1], params[2], params[3], params[4],
                               params[5], params[6], params[7], params[8], params[9], NULL); break;
       default: dbprintf('i', "ERROR: number of argument (%d) is not valid!\n", numargs);
     }
@@ -1183,11 +1035,7 @@ void main (int argc, char *argv[])
     dbprintf('i', "No user program passed!\n");
   }
 
-<<<<<<< HEAD
-  //idlePCB = &pcbs[ProcessFork(&ProcessIdle, 0, 20, 0, "Idle", 0)];
-=======
   ProcessForkIdle();
->>>>>>> Rajat_dev
 
   // Start the clock which will in turn trigger periodic ProcessSchedule's
   ClkStart();
@@ -1213,19 +1061,19 @@ uint32 get_argument(char *string)
   static char *str;
   static int location=0;
   int location2;
-  
+
   if(string)
   {
     str=string;
     location = 0;
   }
-    
+
   location2 = location;
 
   if(str[location]=='\0'||location>=99)
     return 0;
 
-  for(location = 0;location<100;location++)
+  for(;location<100;location++)
   {
     if(str[location]=='\0')
     {
@@ -1242,7 +1090,7 @@ void process_create(char *name, ...)
   int i, j, k;
   char allargs[1000];
   args = &name;
-  
+
   k=0;
   for(i=0; args[i]!=NULL; i++)
   {
@@ -1260,162 +1108,11 @@ int GetPidFromAddress(PCB *pcb) {
   return (int)(pcb - pcbs);
 }
 
-<<<<<<< HEAD
-/*
 // PART 4 HELPER FUNCTION CODES
-//--------------------------------------------------------
-void ProcessRecalcPriority(PCB *pcb){
-    if(pcb->runtime >= PROCESS_QUANTUM_JIFFIES){
-        pcb->estcpu++;
-    }
-    // Check whether this is a user process or a kernel process
-    if((pcb->flags & PROCESS_TYPE_USER) == PROCESS_TYPE_USER){
-        pcb->priority = BASE_PRIORITY_FOR_USER + pcb->estcpu / 4 + 2 * pcb->pnice;
-    }
-    else{
-        pcb->priority = BASE_PRIORITY_FOR_KERNEL + pcb->estcpu / 4 + 2 * pcb->pnice;
-    }
-}
-
-inline int WhichQueue(PCB *pcb){
-    return pcb->priority / PRIORITIES_PER_QUEUE;
-}
-
-int ProcessInsertRunning(PCB *pcb){
-    if (AQueueInsertLast(&runQueue[WhichQueue(pcb)], pcb->l) != QUEUE_SUCCESS) {
-        printf("FATAL ERROR: Could not insert into queue (ProcessInsertRunning)\n");
-        exitsim();
-    }
-    return QUEUE_SUCCESS;
-}
-
-void ProcessDecayEstcpu(PCB *pcb){
-
-    pcb->estcpu = (pcb->estcpu * (2.0/ 3.0)) + pcb->pnice;
-    // Call recalculation of priority ?
-}
-
-void ProcessDecayEstcpuSleep(PCB *pcb, int time_asleep_jiffies){
-    int num_windows_asleep;
-    // using jiffies
-    if(time_asleep_jiffies >= NUM_JIFFIES_UNTIL_DECAY) {
-        num_windows_asleep = time_asleep_jiffies / NUM_JIFFIES_UNTIL_DECAY;
-        pcb->estcpu = pcb->estcpu * power((2.0 / 3.0), num_windows_asleep);
-    }
-}
-
-PCB *ProcessFindHighestPriorityPCB() {
-    int i;
-    for (i = 0; i < NUMBER_RUN_QUEUES; i++) {
-        if(!AQueueEmpty(&runQueue[i])){
-            return AQueueObject(AQueueFirst(&runQueue[i]));
-        }
-    }
-    return NULL;
-}
-
-void ProcessDecayAllEstcpus() {
-    int i;
-    Link* l;
-    PCB* pcb;
-    for (i = 0; i < NUMBER_RUN_QUEUES; i++) {
-        if(!AQueueEmpty(&runQueue[i])) {
-            l = AQueueFirst(&runQueue[i]);
-            while(l != NULL){
-                pcb = AQueueObject(l);
-                ProcessDecayEstcpu(pcb);
-                ProcessRecalcPriority(pcb);
-                l = AQueueNext(l);
-            }
-        }
-    }
-}
-
-// This function is called after you do ProcessDecayAllEstCpus
-// It should iterate through all the runqueue and moves each pcb
-// to its correct queue after the new priorities
-void ProcessFixRunQueues(){
-  int i;
-  Link *l;
-  PCB * pcb;
-  int queueNum;
-
-  for (i = 0; i < NUMBER_RUN_QUEUES; i++) {
-      if(!AQueueEmpty(&runQueue[i])){
-         l = AQueueFirst(&runQueue[i]);
-         while(l != NULL){
-           pcb = (PCB *) AQueueObject(l);
-           AQueueRemove(&pcb->l);
-           queueNum = WhichQueue(pcb);
-           pcb->l = AQueueAllocLink(pcb);
-           AQueueInsertLast(&runQueue[queueNum], pcb->l);
-           l = AQueueNext(l);
-         }
-      }
-  }
-}
-
-int ProcessCountAutowake(){
-    int i;
-    Link *l;
-    PCB *pcb;
-    int count;
-    count = 0;
-
-
-    for (i = 0; i < NUMBER_RUN_QUEUES; i++){
-        if(!AQueueEmpty(&runQueue[i])) {
-            l = AQueueFirst(&runQueue[i]);
-            while(l != NULL) {
-                pcb = (PCB *) AQueueObject(l);
-                l = AQueueNext(l);
-                if((pcb->flags & PROCESS_STATUS_AUTOWAKE) == PROCESS_STATUS_AUTOWAKE)
-                {
-                    count++;
-                }
-            }
-        }
-    }
-    return count;
-}
-
-void ProcessPrintRunQueues(){
-    int i;
-    PCB* pcb;
-    Link *l;
-
-    printf("-------------PRINTING RUNQUEUES----------------\n");
-    for(i = 0; i < NUMBER_RUN_QUEUES; i++) {
-        printf("RunQueue %d\n", i);
-        if(!AQueueEmpty(&runQueue[i])) {
-            l = AQueueFirst(&runQueue[i]);
-            printf("Process Name: %s, EstCPU: ", pcb->name);
-            printf("%f", pcb->estcpu);
-            while(l != NULL) {
-                pcb = (PCB *) AQueueObject(l);
-                printf("  |  Process Name: %s, EstCPU: ", pcb->name);
-                printf("%f", pcb->estcpu);
-                l = AQueueNext(l);
-            }
-            printf("\n");
-        }
-    }
-
-}
-
-//-------------------------------------------------------- */
-
-void ProcessIdle() {
-  while(1);
-}
-
-=======
-// PART 4 HELPER FUNCTION CODES
->>>>>>> Rajat_dev
 //--------------------------------------------------------
 void ProcessRecalcPriority(PCB *pcb){
     // Or do i have to check runtime??
-    if((ClkGetCurJiffies - pcb->switchedtime) >= PROCESS_QUANTUM_JIFFIES){
+    if((ClkGetCurJiffies() - pcb->switchedtime) >= PROCESS_QUANTUM_JIFFIES){
         pcb->estcpu++;
     }
     // Check whether this is a user process or a kernel process
@@ -1503,7 +1200,7 @@ void ProcessFixRunQueues(){
   int i;
   Link *l;
   PCB * pcb;
-  int queueNum;
+  //int queueNum;
 
   for (i = 0; i < NUMBER_RUN_QUEUES; i++) {
       if(!AQueueEmpty(&runQueues[i])){
@@ -1580,11 +1277,7 @@ void ProcessIdle() {
 //--------------------------------------------------------
 void ProcessUserSleep(int seconds) {
   // Your code here
-<<<<<<< HEAD
-  ProcessSetStatus(currentPCB, PROCESS_STATUS_AUTOWAKE);
-=======
   currentPCB->flags |= PROCESS_STATUS_AUTOWAKE;
->>>>>>> Rajat_dev
   currentPCB->wakeuptime = ClkGetCurJiffies() + seconds*CLOCK_PROCESS_JIFFIES;
   ProcessSuspend(currentPCB);
 }
@@ -1596,21 +1289,7 @@ void ProcessUserSleep(int seconds) {
 //-----------------------------------------------------
 void ProcessYield() {
   // Your code here
-<<<<<<< HEAD
-  ProcessSetStatus(currentPCB, PROCESS_STATUS_YIELD);
-=======
   currentPCB->flags |= PROCESS_STATUS_YIELD;
-}
-
-double power(double base, int exp) {
-    int i;
-    double total;
-    total = 1;
-    for (i = 0; i < exp; i++){
-        total = total * base;
-    }
-    return total;
->>>>>>> Rajat_dev
 }
 
 double power(double base, int exp) {
