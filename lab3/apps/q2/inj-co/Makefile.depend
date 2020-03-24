@@ -1,2 +1,0 @@
-work/inj_co.o: inj_co.c ../../../include/usertraps.h \
- ../../../include/misc.h ../include/radeon.h

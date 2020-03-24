@@ -1,2 +1,0 @@
-work/reaction_so4.o: reaction_so4.c ../../../include/usertraps.h \
- ../../../include/misc.h ../include/radeon.h

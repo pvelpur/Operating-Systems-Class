@@ -1,2 +1,0 @@
-work/reaction_s2.o: reaction_s2.c ../../../include/usertraps.h \
- ../../../include/misc.h ../include/radeon.h
