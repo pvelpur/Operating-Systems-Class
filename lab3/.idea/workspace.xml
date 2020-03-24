@@ -1,20 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e9713f18-777f-417d-8d7d-d51fc666eb99" name="Default Changelist" comment="">
+    <list default="true" id="b1fd5747-e6a6-43b8-9eae-1efaa4c1ea80" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/prio_test/makeprocs/Makefile.depend" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/prio_test/makeprocs/work/makeprocs.dlx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/prio_test/makeprocs/work/makeprocs.dlx.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/prio_test/makeprocs/work/makeprocs.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/prio_test/makeprocs/work/makeprocs.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/prio_test/spawn_me/Makefile.depend" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/prio_test/spawn_me/work/spawn_me.dlx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/prio_test/spawn_me/work/spawn_me.dlx.obj" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/prio_test/spawn_me/work/spawn_me.lst" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/prio_test/spawn_me/work/spawn_me.o" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/include/os/process.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/os/process.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bin/os.dlx.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/misc.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/usertraps.aso" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/Makefile.depend" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/os/process.c" beforeDir="false" afterPath="$PROJECT_DIR$/os/process.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/clock.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/dlxos.aso" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/filesys.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/mbox.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/memory.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/misc.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/os.dlx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/os.dlx.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/os.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/osend.aso" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/process.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/queue.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/sysproc.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/trap_random.aso" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/os/work/traps.o" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

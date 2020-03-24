@@ -352,7 +352,7 @@ void ProcessSuspend (PCB *suspend) {
   ASSERT (suspend->flags & PROCESS_STATUS_RUNNABLE, "Trying to suspend a non-running process!\n");
   ProcessSetStatus (suspend, PROCESS_STATUS_WAITING);
 
-  suspend.sleeptime = ClkGetCurJiffies();
+  suspend->sleeptime = ClkGetCurJiffies();
 
   if (AQueueRemove(&(suspend->l)) != QUEUE_SUCCESS) {
     printf("FATAL ERROR: could not remove process from run Queue in ProcessSuspend!\n");
@@ -1112,7 +1112,7 @@ int GetPidFromAddress(PCB *pcb) {
 //--------------------------------------------------------
 void ProcessRecalcPriority(PCB *pcb){
     // Or do i have to check runtime??
-    if((ClkGetCurJiffies - pcb->switchedtime) >= PROCESS_QUANTUM_JIFFIES){
+    if((ClkGetCurJiffies() - pcb->switchedtime) >= PROCESS_QUANTUM_JIFFIES){
         pcb->estcpu++;
     }
     // Check whether this is a user process or a kernel process
@@ -1200,7 +1200,7 @@ void ProcessFixRunQueues(){
   int i;
   Link *l;
   PCB * pcb;
-  int queueNum;
+  //int queueNum;
 
   for (i = 0; i < NUMBER_RUN_QUEUES; i++) {
       if(!AQueueEmpty(&runQueues[i])){
