@@ -206,7 +206,7 @@ void ProcessSchedule () {
   PCB *pcb=NULL;
   PCB* hpPCB=NULL;
   //int i=0; //OLD STUFFS
-  //Link *l=NULL;
+  Link *l=NULL;
   int Jiffies;
   int count;
   int queueNum;
@@ -236,11 +236,11 @@ void ProcessSchedule () {
     //ProcessPrintRunQueues();
 
     //Update currentPCB's priority, estcpu, quantacount;
-    ProcessRecalcPriority(currentPCB);
-    ProcessDecayEstcpu(currentPCB);
-    currentPCB -> quantaCount += 1;
+    //ProcessRecalcPriority(currentPCB);
+    //ProcessDecayEstcpu(currentPCB);
+    //currentPCB -> quantaCount += 1;
 
-    //
+
     if((currentPCB->flags & PROCESS_STATUS_RUNNABLE) == PROCESS_STATUS_RUNNABLE){
         AQueueRemove(&currentPCB->l);
         if((currentPCB->flags & PROCESS_STATUS_YIELD) == PROCESS_STATUS_YIELD){
@@ -261,17 +261,32 @@ void ProcessSchedule () {
 
     }
 
+    //printf("current time of process: %d\n", (ClkGetCurJiffies() - currentPCB->quantaCount));
+
     // if current time (process quanta count) > estcpu decay time
-    if (currentPCB->quantaCount > CPU_WINDOWS_BETWEEN_DECAYS) //(10 quanta)
+    if ((ClkGetCurJiffies() - currentPCB->quantaCount) >= NUM_JIFFIES_UNTIL_DECAY) //(10 quanta)
     {
+        //printf("We out here boiiii");
         //decay estcpus
         ProcessDecayAllEstcpus();
         ProcessFixRunQueues();
         currentPCB->quantaCount = 0;
         // last estcpu decay time = current time (?)
+        currentPCB->quantaCount = ClkGetCurJiffies();
     }
 
     // wake up sleeping processes that need to be woken up (part 5)
+    /*
+    l = AQueueFirst(&waitQueue);
+    while(l != NULL){
+        pcb = AQueueObject(l);
+        l = AQueueNext(l);
+        if(pcb->flags & PROCESS_STATUS_AUTOWAKE){
+            if(ClkGetCurJiffies() >= pcb->wakeuptime){
+                ProcessWakeup(pcb);
+            }
+        }
+    }*/
 
     // Find highest priority pcb
     hpPCB = ProcessFindHighestPriorityPCB();
@@ -678,7 +693,7 @@ int ProcessFork (VoidFunc func, uint32 param, int pnice, int pinfo,char *name, i
   pcb -> sleeptime = 0;
   pcb -> wakeuptime = 0;
   pcb -> estcpu = 0;
-  pcb -> quantaCount = 0;
+  pcb -> quantaCount = ClkGetCurJiffies();
   pcb -> isidle = 0;
 
   // set initial priority, different priorities for user, kernel (not is DLXOS), and idle
@@ -1113,7 +1128,7 @@ int GetPidFromAddress(PCB *pcb) {
 void ProcessRecalcPriority(PCB *pcb){
     // Or do i have to check runtime??
     if((ClkGetCurJiffies() - pcb->switchedtime) >= PROCESS_QUANTUM_JIFFIES){
-        pcb->estcpu++;
+        pcb->estcpu += 1.0f;
     }
     // Check whether this is a user process or a kernel process
     if((pcb->flags & PROCESS_TYPE_USER) == PROCESS_TYPE_USER){
@@ -1153,9 +1168,12 @@ void ProcessDecayEstcpuSleep(PCB *pcb, int time_asleep_jiffies){
 
 PCB *ProcessFindHighestPriorityPCB() {
     int i;
+    PCB *pcb;
     for (i = 0; i < NUMBER_RUN_QUEUES; i++) {
         if(!AQueueEmpty(&runQueues[i])){
-            return AQueueObject(AQueueFirst(&runQueues[i]));
+            pcb = (PCB *) AQueueObject(AQueueFirst(&runQueues[i]));
+            //printf("%s\n", pcb->name);
+            return pcb;
         }
     }
     return NULL;
@@ -1170,8 +1188,10 @@ void ProcessDecayAllEstcpus() {
             l = AQueueFirst(&runQueues[i]);
             while(l != NULL){
                 pcb = AQueueObject(l);
-                ProcessDecayEstcpu(pcb);
-                ProcessRecalcPriority(pcb);
+                if(!pcb->isidle){
+                    ProcessDecayEstcpu(pcb);
+                    ProcessRecalcPriority(pcb);
+                }
                 l = AQueueNext(l);
             }
         }
@@ -1259,7 +1279,6 @@ void ProcessPrintRunQueues(){
                 l = AQueueNext(l);
             }
             printf("\n");
-            printf("done\n\n");
         }
     }
 
@@ -1278,7 +1297,7 @@ void ProcessIdle() {
 void ProcessUserSleep(int seconds) {
   // Your code here
   currentPCB->flags |= PROCESS_STATUS_AUTOWAKE;
-  currentPCB->wakeuptime = ClkGetCurJiffies() + seconds*CLOCK_PROCESS_JIFFIES;
+  currentPCB->wakeuptime = ClkGetCurJiffies() + seconds; //There are 1000 jiffies in a second
   ProcessSuspend(currentPCB);
 }
 

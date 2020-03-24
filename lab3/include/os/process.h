@@ -51,7 +51,7 @@ typedef struct PCB {
 
   int priority;
   double estcpu;
-  int quantaCount;
+  int quantaCount; //Jiffies that have passed
   int isidle;
 
   int           pinfo;          // Turns on printing of runtime stats
