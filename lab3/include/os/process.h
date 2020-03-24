@@ -26,6 +26,8 @@
 #define	PROCESS_STATUS_WAITING	0x4
 #define	PROCESS_STATUS_STARTING	0x8
 #define	PROCESS_STATUS_ZOMBIE	0x10
+#define PROCESS_STATUS_AUTOWAKE 0x20
+#define PROCESS_STATUS_YIELD 0x40
 #define	PROCESS_STATUS_MASK	0x3f
 #define	PROCESS_TYPE_SYSTEM	0x100
 #define	PROCESS_TYPE_USER	0x200
@@ -46,6 +48,11 @@ typedef struct PCB {
   //Parts 3-5
   int runtime; //cummulative time (?) total elasped time
   int switchedtime, wakeuptime, sleeptime;
+
+  int priority;
+  double estcpu;
+  int quantaCount;
+  int isidle;
 
   int           pinfo;          // Turns on printing of runtime stats
   int           pnice;          // Used in priority calculation
@@ -99,10 +106,27 @@ void ProcessYield();
 #define NUMBER_RUN_QUEUES 32
 #define PRIORITIES_PER_QUEUE 4
 #define BASE_PRIORITY_FOR_USER 50
-#define MAX_PRIORITIES_FOR USER 127
+#define BASE_PRIORITY_FOR_KERNEL 0
+#define MAX_PRIORITY 127
 #define CPU_WINDOWS_BETWEEN_DECAYS 10
 
 //Need to change maybe
 #define NUM_JIFFIES_UNTIL_DECAY 100
+
+void ProcessRecalcPriority(PCB *pcb);
+inline int WhichQueue(PCB *pcb);
+int ProcessInsertRunning(PCB *pcb);
+void ProcessDecayEstcpu(PCB *pcb);
+void ProcessDecayEstcpuSleep(PCB *pcb, int time_asleep_jiffies);
+PCB *ProcessFindHighestPriorityPCB();
+void ProcessDecayAllEstcpus();
+void ProcessFixRunQueues();
+int ProcessCountAutowake();
+void ProcessPrintRunQueues();
+void ProcessForkIdle();
+
+void ProcessIdle();
+
+double power(double base, int exp);
 
 #endif	/* __process_h__ */

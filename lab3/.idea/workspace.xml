@@ -3,15 +3,18 @@
   <component name="ChangeListManager">
     <list default="true" id="e9713f18-777f-417d-8d7d-d51fc666eb99" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/example/makeprocs/makeprocs.c" beforeDir="false" afterPath="$PROJECT_DIR$/apps/example/makeprocs/makeprocs.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/q2/makeprocs/makeprocs.c" beforeDir="false" afterPath="$PROJECT_DIR$/apps/q2/makeprocs/makeprocs.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bin/os.dlx.obj" beforeDir="false" afterPath="$PROJECT_DIR$/bin/os.dlx.obj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/prio_test/makeprocs/Makefile.depend" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/prio_test/makeprocs/work/makeprocs.dlx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/prio_test/makeprocs/work/makeprocs.dlx.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/prio_test/makeprocs/work/makeprocs.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/prio_test/makeprocs/work/makeprocs.o" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/prio_test/spawn_me/Makefile.depend" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/prio_test/spawn_me/work/spawn_me.dlx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/prio_test/spawn_me/work/spawn_me.dlx.obj" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/prio_test/spawn_me/work/spawn_me.lst" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/apps/prio_test/spawn_me/work/spawn_me.o" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/include/os/process.h" beforeDir="false" afterPath="$PROJECT_DIR$/include/os/process.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/os/process.c" beforeDir="false" afterPath="$PROJECT_DIR$/os/process.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/os/work/os.dlx" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/os.dlx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/os/work/os.dlx.obj" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/os.dlx.obj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/os/work/os.lst" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/os.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/os/work/process.o" beforeDir="false" afterPath="$PROJECT_DIR$/os/work/process.o" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
