@@ -26,7 +26,7 @@ void main (int argc, char *argv[])
     Printf("Failed to send to mailbox: Inject S2 (%d)", getpid());
     Exit();
   }
-  Printf("(%d) Created a S2 molecule\n", getpid());
+  Printf("S2 injected into atmosphere, PID: (%d)\n", getpid());
 
   if(mbox_close(m_s2) != MBOX_SUCCESS) {
     Printf("Failed to close mailbox: Inject S2 (%d)", getpid());

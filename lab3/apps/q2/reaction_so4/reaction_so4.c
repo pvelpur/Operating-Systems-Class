@@ -57,7 +57,7 @@ void main (int argc, char *argv[])
     Printf("Failed to send to mailbox: Make SO4 (%d)", getpid());
     Exit();
   }
-  Printf("(%d) Created SO4 Molecule\n", getpid());
+  Printf("S + 2O2 -> SO4, PID: (%d)\n", getpid());
 
   //Close
   if(mbox_close(m_s) != MBOX_SUCCESS){
