@@ -57,12 +57,12 @@ void main (int argc, char *argv[])
     Printf("Failed to send to mailbox: Split CO (%d)", getpid());
     Exit();
   }
-  Printf("(%d) Created O2 Molecule\n", getpid());
+  //Printf("4CO2 -> 2O2 + 2C2 PID: (%d)\n", getpid());
   if(mbox_send(m_o2, 2, (void *)"O2") != MBOX_SUCCESS){
     Printf("Failed to send to mailbox: Split CO (%d)", getpid());
     Exit();
   }
-  Printf("(%d) Created O2 Molecule\n", getpid());
+  Printf("4CO2 -> 2O2 + 2C2 PID: (%d)\n", getpid());
   if(mbox_close(m_o2) != MBOX_SUCCESS) {
     Printf("Failed to close mailbox: Split CO (%d)", getpid());
     Exit();

@@ -45,12 +45,12 @@ void main (int argc, char *argv[])
     Printf("Failed to send to mailbox: Split S2 (%d)", getpid());
     Exit();
   }
-  Printf("(%d) Created S Molecule\n", getpid());
+  //Printf("S2 -> S + S, PID: (%d)\n", getpid());
   if(mbox_send(m_s, 1, (void *)"S") != MBOX_SUCCESS){
     Printf("Failed to send to mailbox: Split S2 (%d)", getpid());
     Exit();
   }
-  Printf("(%d) Created S Molecule\n", getpid());
+  Printf("S2 -> S + S, PID: (%d)\n", getpid());
   if(mbox_close(m_s) != MBOX_SUCCESS) {
     Printf("Failed to close mailbox: Split S2 (%d)", getpid());
     Exit();
