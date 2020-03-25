@@ -48,10 +48,10 @@ typedef struct PCB {
   //Parts 3-5
   int runtime; //cummulative time (?) total elasped time
   int switchedtime, wakeuptime, sleeptime;
+  int lastsleep;
 
   int priority;
   double estcpu;
-  int quantaCount; //Jiffies that have passed
   int isidle;
 
   int           pinfo;          // Turns on printing of runtime stats
