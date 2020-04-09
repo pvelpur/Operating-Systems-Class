@@ -66,6 +66,7 @@ uint32 get_argument(char *string);
 //----------------------------------------------------------------------
 void ProcessModuleInit () {
   int		i;
+  int p;
 
   dbprintf ('p', "Entering ProcessModuleInit\n");
   AQueueInit (&freepcbs);
@@ -86,6 +87,11 @@ void ProcessModuleInit () {
     //-------------------------------------------------------
     // STUDENT: Initialize the PCB's page table here.
     //-------------------------------------------------------
+
+    pcbs[i].npages = 0;
+    for (p = 0; p < MEM_L1TABLE_SIZE; p++) {
+        pcbs[p].pagetable[p] = 0;
+    }
 
     // Finally, insert the link into the queue
     if (AQueueInsertFirst(&freepcbs, pcbs[i].l) != QUEUE_SUCCESS) {
@@ -120,6 +126,7 @@ void ProcessSetStatus (PCB *pcb, int status) {
 //----------------------------------------------------------------------
 void ProcessFreeResources (PCB *pcb) {
   int i = 0;
+  int userStackPg;
 
   // Allocate a new link for this pcb on the freepcbs queue
   if ((pcb->l = AQueueAllocLink(pcb)) == NULL) {
@@ -138,6 +145,20 @@ void ProcessFreeResources (PCB *pcb) {
   // STUDENT: Free any memory resources on process death here.
   //------------------------------------------------------------
 
+    // Next free (first the 4 pages for user code and global vars
+    for (i = 0; i < 4; i++) {
+      MemoryFreePte (pcb->pagetable[i]);
+    }
+
+    userStackPg = pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] / MEM_PAGESIZE;
+    for(i = userStackPg; i <= MEM_L1TABLE_SIZE; i++){
+        MemoryFreePte(pcb->pagetable[i]);
+    }
+
+    // Free the page allocated for the system stack
+    MemoryFreePage (pcb->sysStackArea / MEM_PAGESIZE);
+    ProcessSetStatus (pcb, PROCESS_STATUS_FREE);
+    dbprintf ('p', "ProcessFreeResources: function complete\n");
 
   ProcessSetStatus (pcb, PROCESS_STATUS_FREE);
 }
@@ -376,7 +397,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   uint32 offset;           // Used in parsing command line argument strings, holds offset (in bytes) from 
                            // beginning of the string to the current argument.
   uint32 initial_user_params_bytes;  // total number of bytes in initial user parameters array
-
+  int newPage;
 
   intrs = DisableIntrs ();
   dbprintf ('I', "Old interrupt value was 0x%x.\n", intrs);
@@ -416,7 +437,24 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   // equal to the last 4-byte-aligned address in physical page
   // for the system stack.
   //---------------------------------------------------------
+    // User stack
+    dbprintf('m', "Allocating a new page for the User stack \n");
+    newPage = MemoryAllocPage();
+    pcb->pagetable[MEM_L1TABLE_SIZE] = MemorySetupPte (newPage);
 
+    //User Code and global data 4 pages
+    for (i = 0; i < 4; i++) {
+        dbprintf('m', "Allocating a new page (%d) for the User Code and global data\n", i);
+        newPage = MemoryAllocPage();
+        pcb->pagetable[i] = MemorySetupPte(newPage);
+    }
+    pcb->npages = 5;
+
+    // System Stack
+    dbprintf('m', "Allocating a new page (%d) for System Stack\n", i);
+    newPage = MemoryAllocPage();
+    pcb->sysStackArea = newPage * MEM_PAGESIZE;
+    stackframe = (uint32 *)(pcb->sysStackArea + MEM_PAGESIZE - 3); //4-byte aligned
 
 
   // Now that the stack frame points at the bottom of the system stack memory area, we need to
@@ -447,6 +485,10 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
   // STUDENT: setup the PTBASE, PTBITS, and PTSIZE here on the current
   // stack frame.
   //----------------------------------------------------------------------
+    dbprintf('m', "ProcessFork: setup PTBASE, PTBITS, PTSIZE on current stack frame\n");
+    stackframe[PROCESS_STACK_PTBASE] = (uint32)&(pcb->pagetable[0]);
+    stackframe[PROCESS_STACK_PTSIZE] = MEM_L1TABLE_SIZE;
+    stackframe[PROCESS_STACK_PTBITS] = (MEM_L1FIELD_FIRST_BITNUM);
 
   if (isUser) {
     dbprintf ('p', "About to load %s\n", name);
@@ -476,7 +518,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     // STUDENT: setup the initial user stack pointer here as the top
     // of the process's virtual address space (4-byte aligned).
     //----------------------------------------------------------------------
-
+    stackframe[PROCESS_STACK_USER_STACKPOINTER] = MEM_MAX_VIRTUAL_ADDRESS - 3;
 
     //--------------------------------------------------------------------
     // This part is setting up the initial user stack with argc and argv.
