@@ -34,7 +34,7 @@ void main (int argc, char *argv[])
       case(2): num_procs = 1; break;
       case(3): num_procs = 1; break;
       case(4): num_procs = 1; break;
-      case(5): num_procs = 100; break;
+      case(5): num_procs = 1; break;
       case(6): num_procs = 30; break;
   }
 
@@ -73,8 +73,37 @@ void main (int argc, char *argv[])
 
   if(which_step == 2) {
     Printf("-------------------------------------------------------------------------------------\n");
-    Printf("makeprocs (%d): Creating Test for accessing memory beyon Max VAddr\n", getpid());
+    Printf("makeprocs (%d): Creating Test for accessing memory beyond Max VAddr\n", getpid());
     process_create(PART2, s_procs_completed_str, NULL);
+  }
+
+  if(which_step == 3) {
+    Printf("-------------------------------------------------------------------------------------\n");
+    Printf("makeprocs (%d): Creating Test for accessing Valid memory address but outside allocated pages\n", getpid());
+    process_create(PART3, s_procs_completed_str, NULL);
+  }
+
+  if(which_step == 4) {
+    Printf("-------------------------------------------------------------------------------------\n");
+    Printf("makeprocs (%d): Creating Test to cause user function call stack to grow larger than one page\n", getpid());
+    process_create(PART4, s_procs_completed_str, NULL);
+  }
+
+  if(which_step == 5) {
+    Printf("-------------------------------------------------------------------------------------\n");
+    Printf("makeprocs (%d): Creating 100 Hello World Processes\n", getpid());
+    for(i=0;i<100;i++){
+        process_create(PART5, s_procs_completed_str, NULL);
+     }
+  }
+
+  if(which_step == 6) {
+    Printf("-------------------------------------------------------------------------------------\n");
+    Printf("makeprocs (%d): Creating 30 Processes simultaneously as they loop through a large number \n", getpid());
+    for(i = 0; i < 30; i++){
+        process_create(PART6, s_procs_completed_str, NULL);
+     }
+
   }
 
   if (!which_step==0 && (sem_wait(s_procs_completed) != SYNC_SUCCESS)) {

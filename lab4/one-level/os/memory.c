@@ -234,7 +234,7 @@ int MemoryPageFaultHandler(PCB *pcb) {
 
 
     if(faultPage < userPage) {
-        printf("Segfault");
+        printf("Segfault\n");
         ProcessKill();
         return MEM_FAIL;
     }

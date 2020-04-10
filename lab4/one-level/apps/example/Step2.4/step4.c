@@ -2,10 +2,19 @@
 #include "misc.h"
 #include "os/memory_constants.h"
 
+int recursion(int val){
+    if(val == 0){
+        return 0;
+    }
+    return (1 + recursion(val-1));
+
+}
+
 void main (int argc, char *argv[])
 {
   sem_t s_procs_completed; // Semaphore to signal the original process that we're done
-  int *x;
+  int val = 3000;
+  int x;
 
   if (argc != 2) {
     Printf("Usage: %s <handle_to_procs_completed_semaphore>\n");
@@ -16,16 +25,16 @@ void main (int argc, char *argv[])
   s_procs_completed = dstrtol(argv[1], NULL, 10);
 
   // Now print a message to show that everything worked
-  Printf("Step2.2 (%d): Testing Memory access out of bounds (> MAX vaddr)\n", getpid());
+  Printf("Step 2.4 (%d): Testing User stack growing past 1 page\n", getpid());
+
+  x = recursion(val);
+  Printf("Step 2.4 (%d): Value after recursion: %d\n", getpid(), x);
 
   // Signal the semaphore to tell the original process that we're done
   if(sem_signal(s_procs_completed) != SYNC_SUCCESS) {
-    Printf("Step2.2 (%d): Bad semaphore s_procs_completed (%d)!\n", getpid(), s_procs_completed);
+    Printf("Step2.4 (%d): Bad semaphore s_procs_completed (%d)!\n", getpid(), s_procs_completed);
     Exit();
   }
 
-  x = (MEM_MAX_VIRTUAL_ADDRESS + 1);
-  Printf("Step2.2 (%d): Attempted to access Memory Location: %d\n", getpid(), x);
-  Printf("Step2.2 (%d): Accessing Memory Location: %d\n", getpid(), *x);
-  Printf("Step2.2 (%d): Done!\n", getpid());
+  Printf("Step2.4 (%d): Done!\n", getpid());
 }
