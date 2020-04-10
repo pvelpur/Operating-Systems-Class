@@ -18,6 +18,9 @@ clean:
 	cd Step2.5; make clean
 	cd Step2.6; make clean
 
+run:
+	make run1; make run3; make run4; make run5; make run6; make run2
+
 run0:
 	cd ../../bin; dlxsim -x os.dlx.obj -a -u makeprocs.dlx.obj 0; ee469_fixterminal
 
