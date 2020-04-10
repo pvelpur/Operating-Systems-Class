@@ -90,7 +90,7 @@ void ProcessModuleInit () {
 
     pcbs[i].npages = 0;
     for (p = 0; p < MEM_L1TABLE_SIZE; p++) {
-        pcbs[p].pagetable[p] = 0;
+        pcbs[i].pagetable[p] = 0;
     }
 
     // Finally, insert the link into the queue
@@ -146,21 +146,21 @@ void ProcessFreeResources (PCB *pcb) {
   //------------------------------------------------------------
 
     // Next free (first the 4 pages for user code and global vars
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < MEM_L1TABLE_SIZE; i++) {
       MemoryFreePte (pcb->pagetable[i]);
     }
 
+    /*
     userStackPg = pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER] / MEM_PAGESIZE;
     for(i = userStackPg; i <= MEM_L1TABLE_SIZE; i++){
         MemoryFreePte(pcb->pagetable[i]);
     }
+    */
 
     // Free the page allocated for the system stack
     MemoryFreePage (pcb->sysStackArea / MEM_PAGESIZE);
     ProcessSetStatus (pcb, PROCESS_STATUS_FREE);
     dbprintf ('p', "ProcessFreeResources: function complete\n");
-
-  ProcessSetStatus (pcb, PROCESS_STATUS_FREE);
 }
 
 //----------------------------------------------------------------------
@@ -454,7 +454,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     dbprintf('m', "Allocating a new page (%d) for System Stack\n", i);
     newPage = MemoryAllocPage();
     pcb->sysStackArea = newPage * MEM_PAGESIZE;
-    stackframe = (uint32 *)(pcb->sysStackArea + MEM_PAGESIZE - 3); //4-byte aligned
+    stackframe = (uint32 *)(pcb->sysStackArea + MEM_PAGESIZE - 4); //4-byte aligned
 
 
   // Now that the stack frame points at the bottom of the system stack memory area, we need to
@@ -488,7 +488,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     dbprintf('m', "ProcessFork: setup PTBASE, PTBITS, PTSIZE on current stack frame\n");
     stackframe[PROCESS_STACK_PTBASE] = (uint32)&(pcb->pagetable[0]);
     stackframe[PROCESS_STACK_PTSIZE] = MEM_L1TABLE_SIZE;
-    stackframe[PROCESS_STACK_PTBITS] = (MEM_L1FIELD_FIRST_BITNUM);
+    stackframe[PROCESS_STACK_PTBITS] = (MEM_L1FIELD_FIRST_BITNUM) | (MEM_L1FIELD_FIRST_BITNUM << 16);
 
   if (isUser) {
     dbprintf ('p', "About to load %s\n", name);

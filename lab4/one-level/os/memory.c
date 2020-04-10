@@ -117,16 +117,13 @@ uint32 MemoryTranslateUserToSystem (PCB *pcb, uint32 addr) {
     }
 
     // Get page table entry in page table and check that it is valid
-    if(pcb->pagetable[pagenum] & MEM_PTE_VALID){
-        return (pcb->pagetable[pagenum] & MEM_PTE_MASK) + offset;
-    }
-    else {
+    if((pcb->pagetable[pagenum] & MEM_PTE_VALID) == 0){
         //Save address to the currentSavedFrame
-        // (???????????)
         pcb->currentSavedFrame[PROCESS_STACK_FAULT] = addr;
         MemoryPageFaultHandler(pcb);
-        return MEM_FAIL;
     }
+
+    return (pcb->pagetable[pagenum] & MEM_PTE_MASK) + offset;
 }
 
 
@@ -228,22 +225,22 @@ int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from,unsigned char *to, int
 //---------------------------------------------------------------------
 int MemoryPageFaultHandler(PCB *pcb) {
     int newallocpage;
-    int addr = pcb->currentSavedFrame[PROCESS_STACK_FAULT];
+    int fault_addr = pcb->currentSavedFrame[PROCESS_STACK_FAULT];
     int user_stack_address = pcb->currentSavedFrame[PROCESS_STACK_USER_STACKPOINTER];
-    //int faultPage = addr / MEM_PAGESIZE;
-    //int userPage = user_stack_address / MEM_PAGESIZE;
+    int faultPage = fault_addr / MEM_PAGESIZE;
+    int userPage = user_stack_address / MEM_PAGESIZE;
 
     dbprintf ('m', "MemoryPageFaultHandler, Start\n");
 
 
-    if(addr >= user_stack_address) {
+    if(faultPage < userPage) {
         printf("Segfault");
         ProcessKill();
         return MEM_FAIL;
     }
     else {
         newallocpage = MemoryAllocPage(); //returns allocated page number
-        pcb->pagetable[addr] = MemorySetupPte(newallocpage); //Returns PTE and stores
+        pcb->pagetable[faultPage] = MemorySetupPte(newallocpage); //Returns PTE and stores
         pcb->npages += 1;
     }
 
