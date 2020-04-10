@@ -5,6 +5,7 @@ default:
 	cd Step2.2; make
 	cd Step2.3; make
 	cd Step2.4; make
+	cd Step2.5; make
 	cd Step2.6; make
 
 clean:

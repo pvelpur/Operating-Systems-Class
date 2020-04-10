@@ -91,10 +91,14 @@ void main (int argc, char *argv[])
 
   if(which_step == 5) {
     Printf("-------------------------------------------------------------------------------------\n");
-    Printf("makeprocs (%d): Creating 100 Hello World Processes\n", getpid());
-    for(i=0;i<100;i++){
-        process_create(PART5, s_procs_completed_str, NULL);
-     }
+    for(i=0; i<100; i++) {
+      Printf("makeprocs (%d): Creating hello world #%d\n", getpid(), i);
+      process_create(PART5, s_procs_completed_str, NULL);
+      if (sem_wait(s_procs_completed) != SYNC_SUCCESS) {
+        Printf("Bad semaphore s_procs_completed (%d) in %s\n", s_procs_completed, argv[0]);
+        Exit();
+      }
+    }
   }
 
   if(which_step == 6) {
@@ -106,7 +110,7 @@ void main (int argc, char *argv[])
 
   }
 
-  if (!which_step==0 && (sem_wait(s_procs_completed) != SYNC_SUCCESS)) {
+  if (!which_step==0 && !which_step==5 && (sem_wait(s_procs_completed) != SYNC_SUCCESS)) {
     Printf("Bad semaphore s_procs_completed (%d) in %s\n", s_procs_completed, argv[0]);
     Exit();
   }
