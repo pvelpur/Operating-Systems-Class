@@ -14,7 +14,6 @@
 // num_pages = size_of_memory / size_of_one_page
 // num_pages = 2MB / 4KB = 512, 512 / 32 = 16 because each int represents 32 pages
 static uint32 freemap[16];
-static int page_refcounters[MEM_MAX_PAGES]; //512 (?)
 static uint32 pagestart;
 static int nfreepages;
 static int freemapmax;
@@ -67,10 +66,10 @@ void MemoryModuleInit() {
 
     // pagestart = first page since last os page
     pagestart = (lastosaddress + MEM_PAGESIZE - 4) / MEM_PAGESIZE;
-    printf("PageStart: %d\n", pagestart);
+
     //freemapmax = max index for freemap array
     freemapmax = (MEM_MAX_PAGES + 31) / 32;
-    printf("FreemapMAX: %d\n", freemapmax);
+
     dbprintf ('m', "Map has %d entries, memory size is 0x%x.\n", freemapmax, MEM_MAX_PAGES);
 
     //nfreepages = how many free pages available in the system not including os pages
@@ -80,16 +79,7 @@ void MemoryModuleInit() {
     for(i = 0; i < freemapmax; i++) {
         freemap[i] = 0;
     }
-    //set reference counter to 1 for all os pages, 0 for all other pages
-    for(i=0; i < MEM_MAX_PAGES; i++) {
-        if(i < pagestart) {
-            page_refcounters[i] = 1;
-        }
-        else{
-            page_refcounters[i] = 0;
-        }
-    }
-    printf("MEM_MAX_PAGES: %d\n", MEM_MAX_PAGES);
+
    // for all free pages
    //       MemorySetFreemap()
     for(curpage = pagestart; curpage < MEM_MAX_PAGES; curpage++){
@@ -287,7 +277,6 @@ int MemoryAllocPage(void) {
     dbprintf ('m', "Allocated memory, from map %d, page %d, map=0x%x.\n",
   	    v, mapnum, freemap[mapnum]);
     nfreepages -= 1;
-    page_refcounters[v] = 1;
     return v;
 }
 
@@ -295,47 +284,6 @@ int MemoryAllocPage(void) {
 uint32 MemorySetupPte (uint32 page) {
   dbprintf('m', "Enter MemorySetupPte\n");
   return ((page * MEM_PAGESIZE) | MEM_PTE_VALID);
-}
-
-int MemoryROPAccessHandler(PCB* pcb){
-    int newPage;
-    //find fault_addr from pcb
-    uint32 fault_addr = pcb->currentSavedFrame[PROCESS_STACK_FAULT];
-    //find l1_page_num for this fault_addr;
-    int faultPage = fault_addr / MEM_PAGESIZE;
-    //find pte associated with this pagenum
-    uint32 faultPTE = pcb->pagetable[faultPage];
-    //find physical Page num
-    uint32 faultPhysPage = (faultPTE & MEM_PTE_MASK) / MEM_PAGESIZE;
-
-    dbprintf('m', "MemoryROPAccessHandler");
-    printf("FAULTPAGE: %d\n", faultPage);
-    printf("FAULTPHYSPAGE: %d\n", faultPhysPage);
-    //if refcounter for phys page < 1
-   if(page_refcounters[faultPhysPage] < 1){
-        ProcessKill();
-        return MEM_FAIL;
-   }
-   if(page_refcounters[faultPhysPage] == 1) {
-        //Mark it as Read/Write
-        dbprintf('m', "Page_refcount at physical page is 1");
-        pcb->pagetable[faultPage] = faultPTE & invert(MEM_PTE_READONLY);
-   }
-   else {
-        //other process are referring to this page
-        //allocate a new page
-        newPage = MemoryAllocPage();
-        //Copy old data to the new page via "bcopy"
-        // page number to page address (?)
-        bcopy((char *)(fault_addr), (char *)(newPage * MEM_PAGESIZE), MEM_PAGESIZE); //idk if this is right
-        //Setup pte for this new page
-        pcb->pagetable[faultPage] = MemorySetupPte(newPage);
-        //decrement refcounter
-        page_refcounters[faultPhysPage] -=1;
-   }
-
-   return MEM_SUCCESS;
-
 }
 
 
@@ -346,33 +294,8 @@ void MemoryFreePage(uint32 page)
   dbprintf ('m',"Freed page 0x%x, %d remaining.\n", page, nfreepages);
 }
 
-//if refcount < 1
-        //processkill and return mem_fail
-//else
-        //decrement refcount for the given page
-//f refcount == 0
-        // MemoryFreePage()
 void MemoryFreePte(uint32 pte) {
-    uint32 page =  (pte & MEM_PTE_MASK) / MEM_PAGESIZE;
-
-    if(page_refcounters[page] < 1) {
-        dbprintf('m', "MemoryFreePte: MEM_FAIL BRUH\n");
-        ProcessKill();
-        //return MEM_FAIL;
-    }
-    else{
-        page_refcounters[page] -= 1;
-    }
-
-    if(page_refcounters[page] == 0) {
-        MemoryFreePage (page);
-    }
-}
-
-void incrementRefcounter(uint32 pte) {
-    int page = ((pte & MEM_PTE_MASK) / MEM_PAGESIZE);
-    dbprintf('m', "incrementRefCounter within memory.c\n");
-    page_refcounters[page] += 1;
+    MemoryFreePage ((pte & MEM_PTE_MASK) / MEM_PAGESIZE);
 }
 
 //Functions to compile the OS

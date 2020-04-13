@@ -90,7 +90,6 @@ void main (int argc, char *argv[])
   }
 
   if(which_step == 5) {
-    Printf("makeprocs (%d): Creating 100 hello_world processes\n", getpid());
     Printf("-------------------------------------------------------------------------------------\n");
     for(i=0; i<100; i++) {
       Printf("makeprocs (%d): Creating hello world #%d\n", getpid(), i);
