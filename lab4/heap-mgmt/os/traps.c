@@ -360,7 +360,6 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       break;
     case TRAP_PROCESS_FORK:
       dbprintf ('t', "Got a fork trap!\n");
-      ProcessRealFork();
       break;
     case TRAP_PROCESS_SLEEP:
       dbprintf ('t', "Got a process sleep trap!\n");
@@ -532,10 +531,6 @@ dointerrupt (unsigned int cause, unsigned int iar, unsigned int isr,
       break;
     case TRAP_PAGEFAULT:
       MemoryPageFaultHandler(currentPCB);
-      break;
-    case TRAP_ROP_ACCESS:
-      dbprintf('t', "Got a ROP Access handler trap!\n");
-      MemoryROPAccessHandler(currentPCB);
       break;
     default:
       printf ("Got an unrecognized system interrupt (0x%x) - exiting!\n",

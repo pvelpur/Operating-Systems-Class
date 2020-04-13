@@ -126,7 +126,7 @@ void ProcessSetStatus (PCB *pcb, int status) {
 //----------------------------------------------------------------------
 void ProcessFreeResources (PCB *pcb) {
   int i = 0;
-  //int userStackPg;
+  int userStackPg;
 
   // Allocate a new link for this pcb on the freepcbs queue
   if ((pcb->l = AQueueAllocLink(pcb)) == NULL) {
@@ -999,68 +999,4 @@ void ProcessKill() {
   ProcessSchedule();
 }
 
-int ProcessRealFork() {
-    PCB * childpcb;
-    int i;
-    int sysPage;
 
-    //Make sure that freePCB's is not empty
-    if(AQueueEmpty(&freepcbs)) {
-        printf("FATAL ERROR: There are no free processes");
-        exitsim();
-    }
-    //name a child's pcb object from freepcbs
-    childpcb = (PCB *)AQueueObject(AQueueFirst(&freepcbs));
-
-    // Remove this pcb from the queue
-    if(AQueueRemove(&(childpcb->l)) != QUEUE_SUCCESS) {
-        printf("FATAL ERROR: Could not remove link from the freepcbs Queue in ProcessRealFork\n");
-        exitsim();
-    }
-    //Loop through currentPCB's L1 table and make valid ones as READONLY
-    for (i = 0; i < MEM_L1TABLE_SIZE; i++){
-        if(currentPCB->pagetable[i] & MEM_PTE_VALID) {
-            //set to readonly
-            currentPCB->pagetable[i] |= MEM_PTE_READONLY;
-            //increment the reference count for this physical page
-            incrementRefcounter(currentPCB->pagetable[i]);
-        }
-
-    }
-    // duplicate PCBs via "bcopy"
-    bcopy((char *)currentPCB, (char *)childpcb, sizeof(PCB));
-
-    // give the new process its own copy of the system stack
-    sysPage = MemoryAllocPage(sysPage);
-    // set the stackarea for the child pcb
-    childpcb-> sysStackArea = sysPage * MEM_PAGESIZE;
-    //Copy parent's system stack onto child's new system stack
-    bcopy((char *)currentPCB->sysStackArea, (char *)childpcb->sysStackArea, MEM_PAGESIZE);
-
-    childpcb->sysStackPtr = childpcb->sysStackArea + (currentPCB->sysStackPtr - currentPCB->sysStackArea);
-    // (???) Is this how to set the currentsavedframe??
-    childpcb->currentSavedFrame = childpcb->sysStackArea + (currentPCB->currentSavedFrame - currentPCB->sysStackArea);
-    dbprintf('m', "Do we make it here?\n");
-    //Fix Page table page pointer in the current frame for the child pcb
-    childpcb->currentSavedFrame[PROCESS_STACK_PTBASE] = (uint32) &childpcb->pagetable[0];
-
-    if(currentPCB->currentSavedFrame[PROCESS_STACK_PREV_FRAME] != 0){
-        dbprintf('m', "ProcessRealFork: if currentPCB current saved frame is != 0\n");
-        //childpcb->currentSavedFrame[PROCESS_STACK_PREV_FRAME] = currentPCB->currentSavedFrame[PROCESS_STACK_PREV_FRAME];
-        childpcb->currentSavedFrame[PROCESS_STACK_PREV_FRAME] = childpcb->sysStackArea + (currentPCB->currentSavedFrame[PROCESS_STACK_PREV_FRAME] - currentPCB->sysStackArea);
-    }
-
-    //set return value of fork to the pid of the child process for the parent
-    ProcessSetResult(childpcb, 0);
-    ProcessSetResult(currentPCB, GetPidFromAddress(childpcb));
-
-    ProcessSetStatus(childpcb, PROCESS_STATUS_RUNNABLE);
-
-    if((childpcb->l = AQueueAllocLink(childpcb)) == NULL){
-        printf("FATAL ERROR: Could not allocate link ProcessRealFork");
-        exitsim();
-    }
-    AQueueInsertLast(&runQueue, childpcb->l);
-    return 1;
-
-}
