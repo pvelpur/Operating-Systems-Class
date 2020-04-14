@@ -38,5 +38,18 @@
 #define MEM_MAX_PAGES (MEM_MAX_PHYS_MEM / MEM_PAGESIZE)
 #define MEM_PTE_MASK (~(MEM_PTE_DIRTY | MEM_PTE_VALID | MEM_PTE_READONLY))
 
+#define MEM_NUM_NODES 255
+
+typedef struct Node {
+    struct Node *parent;
+    struct Node *left;
+    struct Node *right;
+    int inuse;
+    int Blocksize;
+    int index; // Do we need this one?
+    int order;
+    int offset;
+} Node;
+
 
 #endif	// _memory_constants_h_

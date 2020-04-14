@@ -1,2 +1,0 @@
-work/step4.o: step4.c ../../../include/usertraps.h ../../../include/misc.h \
- ../../../include/os/memory_constants.h

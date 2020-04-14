@@ -32,4 +32,9 @@ uint32 MemorySetupPte(uint32 page);
 void *malloc(PCB* pcb, int memsize);
 int mfree(PCB*pcb, void *ptr);
 
+int MemoryFindSlot(Node * node, int memsize);
+int MemorySplitHeap(Node * node, PCB * pcb, int memsize);
+void MemoryCoalescing(Node * node);
+
+
 #endif	// _memory_h_

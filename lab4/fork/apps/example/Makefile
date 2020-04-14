@@ -4,5 +4,5 @@ default:
 clean:
 	cd testFork; make clean
 
-runFork:
+run:
 	cd ../../bin; dlxsim -x os.dlx.obj -a -u testFork.dlx.obj 0; ee469_fixterminal

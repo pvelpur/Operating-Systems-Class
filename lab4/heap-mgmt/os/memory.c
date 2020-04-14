@@ -220,7 +220,7 @@ int MemoryCopyUserToSystem (PCB *pcb, unsigned char *from,unsigned char *to, int
 // caused the page fault, i.e. it is the vaddr with the offset zero-ed
 // out.
 //
-// Note: The existing code is incomplete and only for reference. 
+// Note: The existing code is incomplete and only for reference.
 // Feel free to edit.
 //---------------------------------------------------------------------
 int MemoryPageFaultHandler(PCB *pcb) {
@@ -300,9 +300,199 @@ void MemoryFreePte(uint32 pte) {
 
 //Functions to compile the OS
 void *malloc(PCB *pcb, int memsize) {
+    int searchRes;
+    int splitRes;
+    uint32 virtualAddr, physAddr;
+
+    dbprintf('m', "Start Memory Malloc for size %d\n", memsize);
+
+    if ((memsize <= 0 || memsize > MEM_PAGESIZE))
+    {
+        return NULL;
+    }
+
+    // Next, find suitable memory slot
+    searchRes = MemoryFindSlot(&pcb->heapArr[0], memsize);
+    if(searchRes != MEM_FAIL){
+        //we found a match so return virtual address
+        virtualAddr = searchRes + pcb->heapArea;
+        physAddr = MemoryTranslateUserToSystem(pcb, virtualAddr);
+        printf("Created a heap block of size %d bytes: virtual address 0x%x, physical address 0x%x \n", memsize, virtualAddr, physAddr);
+        return (void *)(pcb->heapArea + searchRes);
+    }
+    else {
+        // need to split the memory and continue the search
+        splitRes = MemorySplitHeap(&(pcb->heapArr[0]), pcb, memsize);
+        if(splitRes != MEM_FAIL){
+            return (void *)(pcb->heapArea + splitRes);
+        }
+        else {
+            printf("Could not find a block of memory of necessary size to allocate\n");
+        }
+    }
+
     return NULL;
 }
+
+int MemoryFindSlot(Node * node, int memsize) {
+    int block; // Value for the min block size needed to allocate
+    int val;
+
+    block = 32; // min block that can be allocted (order 0) is 32
+    while(block < memsize){
+        block = block * 2;
+    }
+
+    if(node == NULL){ return MEM_FAIL;}
+    // if it's a leaf node (no left or right node, and inuse is 0, then we can return it
+    if((node->left == NULL) && (node->right == NULL) && (node->inuse ==0))
+    {
+        //If we find a match
+        if(node->Blocksize == block){
+            node->inuse = 1;
+            printf("Allocated the block: order= %d, addr=%d, requested mem size = %d, block size = %d\n", node->order, node->offset, memsize, block);
+            return node->offset;
+        }
+        else{
+            return MEM_FAIL;
+        }
+    }
+
+    // If leaf node is not found, need to recursively traverse until we can find something
+    val = MemoryFindSlot(node -> left, memsize);
+    if( val != MEM_FAIL){
+        return val;
+    }
+    else{
+        return MemoryFindSlot(node -> right, memsize);
+    }
+
+}
+
+int MemorySplitHeap(Node * node, PCB * pcb, int memsize) {
+    int val;
+    int slot;
+    //int slotFound;
+    Node* left;
+    Node* right;
+
+    if(node == NULL){ return MEM_FAIL;}
+    if((node->left == NULL) && (node->right == NULL) && (node->inuse ==0))
+    {
+        if(memsize <= (node->Blocksize / 2)) {
+            if(node->order == 0){
+                return MEM_FAIL;
+            }
+            else{
+                //Allocate the left child
+                left = &(pcb->heapArr[(2*node->index) + 1]);
+                left->parent = node;
+                //left and right should already be null from the initialization
+                left->Blocksize = node->Blocksize / 2;
+                left->order = node->order - 1;
+                left->offset = node->offset;
+                printf("Created a left child node (order = %d, addr=%d, size = %d) of parent (order = %d, addr=%d, size = %d)\n", left->order, left->offset, left->Blocksize, node->order, node->offset, node->Blocksize);
+                //Allocate the right child
+                right = &(pcb->heapArr[(2*node->index) + 2]);
+                right->parent = node;
+                right->Blocksize = node->Blocksize / 2;
+                right->order = node->order - 1;
+                right->offset = node-> offset + right->Blocksize;
+                printf("Created a right child node (order = %d, addr=%d, size = %d) of parent (order = %d, addr=%d, size = %d)\n", right->order, right->offset, right->Blocksize, node->order,  node->offset, node->Blocksize);
+
+                //Set the left and right child of the parent
+                node->left = left;
+                node->right = right;
+            }
+        }
+    }
+
+    slot = MemoryFindSlot(&(pcb->heapArr[0]), memsize);
+    if(slot != MEM_FAIL){
+        //printf("Memory Split heap complete and memory slot found");
+        return slot;
+    }
+    else {
+        //printf("nodeLeftSize: %d\n", (node->left)->Blocksize);
+        val = MemorySplitHeap(node->left, pcb, memsize);
+        if(val != MEM_FAIL) {
+            return val;
+        }
+        else {
+            return MemorySplitHeap(node->right, pcb, memsize);
+        }
+    }
+}
+
 int mfree(PCB* pcb, void* ptr){
-    return MEM_FAIL;
+    Node * node;
+    int addr_offset;
+    int i, size;
+
+    //printf("FREEING MEMORY!\n");
+
+    if(ptr == NULL) {
+        return MEM_FAIL;
+    }
+    //check if ptr is outside of the heap pages (?)
+    if(((int)ptr >= (5*MEM_PAGESIZE)) || ((int)ptr < (4*MEM_PAGESIZE))) {
+        return MEM_FAIL;
+    }
+
+    // Get the offset bits from the address
+    addr_offset = ((int)ptr & (MEM_ADDRESS_OFFSET_MASK));
+    for(i= MEM_NUM_NODES-1 ; i >= 0; i--){
+        if(pcb->heapArr[i].offset == addr_offset){
+            node = &(pcb->heapArr[i]);
+            size = pcb->heapArr[i].Blocksize;
+            break;
+        }
+    }
+    //printf("\n");
+    //printf("O: %d, A: %d, Size: %d\n", node->order, node->offset, node->Blocksize);
+    //printf("\n");
+    MemoryCoalescing(node);
+    printf("Freed the block: order = %d, addr = %d, size = %d\n", node->order, node->offset, size);
+    return size;
+}
+
+void MemoryCoalescing(Node * node){
+    Node * parent;
+
+    if(node == NULL) {return;}
+
+    node->inuse = 0;
+    node->left = NULL;
+    node->right = NULL;
+
+    //printf("MemoryCoalescing function START!\n");
+
+    // We have reached the root node
+    if(node->parent == NULL) {
+        return;
+    }
+    else{
+        //We are at a leaf node
+        //check if we are the left node or the right node
+        parent = node->parent;
+        if(parent->left == node){
+            // Check if the right node is in use or not and that its a leaf node
+            if(parent->right->inuse == 0 && (parent->right->left == NULL && parent->right->right == NULL)) {
+                printf("Coalesced buddy nodes (order = %d, addr = %d, size = %d) & (order = %d, addr = %d, size = %d)\n", node->order , node->offset, node->Blocksize, parent->right->order, parent->right->offset, parent->right->Blocksize);
+                printf("into the parent node (order = %d, addr = %d, size=%d)\n", parent->order, parent->offset, parent->Blocksize);
+                MemoryCoalescing(parent);
+            }
+        }
+        else {
+            // Check if the right node is in use or not
+            if(parent->left->inuse == 0 && (parent->left->left == NULL && parent->left->right == NULL)) {
+                printf("Coalesced buddy nodes (order = %d, addr = %d, size = %d) & (order = %d, addr = %d, size = %d)\n", node->order , node->offset, node->Blocksize, parent->left->order, parent->left->offset, parent->left->Blocksize);
+                printf("into the parent node (order = %d, addr = %d, size=%d)\n", parent->order, parent->offset, parent->Blocksize);
+                MemoryCoalescing(parent);
+            }
+        }
+
+    }
+
 }
 

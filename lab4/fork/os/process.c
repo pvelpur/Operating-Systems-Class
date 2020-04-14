@@ -440,7 +440,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     // User stack
     dbprintf('m', "Allocating a new page for the User stack \n");
     newPage = MemoryAllocPage();
-    pcb->pagetable[MEM_L1TABLE_SIZE] = MemorySetupPte (newPage);
+    pcb->pagetable[MEM_L1TABLE_SIZE-1] = MemorySetupPte (newPage);
 
     //User Code and global data 4 pages
     for (i = 0; i < 4; i++) {
@@ -1037,7 +1037,9 @@ int ProcessRealFork() {
     //Copy parent's system stack onto child's new system stack
     bcopy((char *)currentPCB->sysStackArea, (char *)childpcb->sysStackArea, MEM_PAGESIZE);
 
-    childpcb->sysStackPtr = childpcb->sysStackArea + (currentPCB->sysStackPtr - currentPCB->sysStackArea);
+    childpcb->sysStackPtr = childpcb->sysStackArea + (currentPCB->sysStackPtr - currentPCB->sysStackArea); // Base Address + offset
+    // current pcb -?> 0x4 300    child -> 0x7000 + 300
+
     // (???) Is this how to set the currentsavedframe??
     childpcb->currentSavedFrame = childpcb->sysStackArea + (currentPCB->currentSavedFrame - currentPCB->sysStackArea);
     dbprintf('m', "Do we make it here?\n");
@@ -1061,6 +1063,6 @@ int ProcessRealFork() {
         exitsim();
     }
     AQueueInsertLast(&runQueue, childpcb->l);
-    return 1;
+    return (childpcb - pcbs);
 
 }

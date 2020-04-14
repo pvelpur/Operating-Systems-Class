@@ -308,6 +308,7 @@ int MemoryROPAccessHandler(PCB* pcb){
     //find physical Page num
     uint32 faultPhysPage = (faultPTE & MEM_PTE_MASK) / MEM_PAGESIZE;
 
+    printf("Enter the MemROPAccessHandler\n");
     dbprintf('m', "MemoryROPAccessHandler");
     printf("FAULTPAGE: %d\n", faultPage);
     printf("FAULTPHYSPAGE: %d\n", faultPhysPage);

@@ -126,7 +126,7 @@ void ProcessSetStatus (PCB *pcb, int status) {
 //----------------------------------------------------------------------
 void ProcessFreeResources (PCB *pcb) {
   int i = 0;
-  int userStackPg;
+  //int userStackPg;
 
   // Allocate a new link for this pcb on the freepcbs queue
   if ((pcb->l = AQueueAllocLink(pcb)) == NULL) {
@@ -398,6 +398,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
                            // beginning of the string to the current argument.
   uint32 initial_user_params_bytes;  // total number of bytes in initial user parameters array
   int newPage;
+  //int heapPage;
 
   intrs = DisableIntrs ();
   dbprintf ('I', "Old interrupt value was 0x%x.\n", intrs);
@@ -440,15 +441,18 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     // User stack
     dbprintf('m', "Allocating a new page for the User stack \n");
     newPage = MemoryAllocPage();
-    pcb->pagetable[MEM_L1TABLE_SIZE] = MemorySetupPte (newPage);
+    pcb->pagetable[MEM_L1TABLE_SIZE-1] = MemorySetupPte (newPage);
 
-    //User Code and global data 4 pages
-    for (i = 0; i < 4; i++) {
+    //User Code and global data 4 pages and Heap
+    for (i = 0; i < 5; i++) {
         dbprintf('m', "Allocating a new page (%d) for the User Code and global data\n", i);
         newPage = MemoryAllocPage();
         pcb->pagetable[i] = MemorySetupPte(newPage);
     }
-    pcb->npages = 5;
+    pcb->npages = 6;
+
+    //Heap area (on page number 4)
+    pcb->heapArea = 4 * MEM_PAGESIZE;
 
     // System Stack
     dbprintf('m', "Allocating a new page (%d) for System Stack\n", i);
@@ -456,6 +460,21 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     pcb->sysStackArea = newPage * MEM_PAGESIZE;
     stackframe = (uint32 *)(pcb->sysStackArea + MEM_PAGESIZE - 4); //4-byte aligned
 
+  // initialize the nodes in heap array
+  for (i =0; i < MEM_NUM_NODES; i++) {
+    pcb->heapArr[i].parent = NULL;
+    pcb->heapArr[i].left = NULL;
+    pcb-> heapArr[i].right = NULL;
+    pcb->heapArr[i].index = i;
+    pcb->heapArr[i].Blocksize = 0;
+    pcb->heapArr[i].inuse = 0; //1 means being used
+    pcb->heapArr[i].order = -1;
+    pcb->heapArr[i].offset = -1;
+  }
+    //initialize the root node in the heap array for process
+    pcb->heapArr[0].Blocksize = MEM_PAGESIZE;
+    pcb->heapArr[0].offset = 0;
+    pcb->heapArr[0].order = 7;
 
   // Now that the stack frame points at the bottom of the system stack memory area, we need to
   // move it up (decrement it) by one stack frame size because we're about to fill in the

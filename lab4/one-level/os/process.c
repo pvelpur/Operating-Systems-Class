@@ -440,7 +440,7 @@ int ProcessFork (VoidFunc func, uint32 param, char *name, int isUser) {
     // User stack
     dbprintf('m', "Allocating a new page for the User stack \n");
     newPage = MemoryAllocPage();
-    pcb->pagetable[MEM_L1TABLE_SIZE] = MemorySetupPte (newPage);
+    pcb->pagetable[MEM_L1TABLE_SIZE-1] = MemorySetupPte (newPage);
 
     //User Code and global data 4 pages
     for (i = 0; i < 4; i++) {
