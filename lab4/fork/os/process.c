@@ -1063,6 +1063,28 @@ int ProcessRealFork() {
         exitsim();
     }
     AQueueInsertLast(&runQueue, childpcb->l);
+
+    printf("ProcessRealFork: Printing the Valid PTE's for Parent Process:\n");
+    ProcessPrintFork(currentPCB);
+    printf("ProcessRealFork: Printing the Valid PTE's for Child Process:\n");
+    ProcessPrintFork(childpcb);
+
     return (childpcb - pcbs);
 
+}
+
+void ProcessPrintFork(PCB * pcb) {
+    int i;
+    int newline = 4;
+    printf("Valid Page Table Entries after fork call (%d)\n", GetPidFromAddress(pcb));
+    for(i = 0; i < MEM_L1TABLE_SIZE; i++){
+        if(pcb->pagetable[i] & MEM_PTE_VALID){
+            if((i % newline) == 0){
+                printf("\n");
+            }
+            printf("PTE: %d | Index: %d\t", pcb->pagetable[i], i);
+        }
+
+    }
+    printf("\n");
 }

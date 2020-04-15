@@ -299,6 +299,7 @@ uint32 MemorySetupPte (uint32 page) {
 
 int MemoryROPAccessHandler(PCB* pcb){
     int newPage;
+    int i;
     //find fault_addr from pcb
     uint32 fault_addr = pcb->currentSavedFrame[PROCESS_STACK_FAULT];
     //find l1_page_num for this fault_addr;
@@ -310,8 +311,8 @@ int MemoryROPAccessHandler(PCB* pcb){
 
     printf("Enter the MemROPAccessHandler\n");
     dbprintf('m', "MemoryROPAccessHandler");
-    printf("FAULTPAGE: %d\n", faultPage);
-    printf("FAULTPHYSPAGE: %d\n", faultPhysPage);
+    //printf("FAULTPAGE: %d\n", faultPage);
+    //printf("FAULTPHYSPAGE: %d\n", faultPhysPage);
     //if refcounter for phys page < 1
    if(page_refcounters[faultPhysPage] < 1){
         ProcessKill();
@@ -333,6 +334,18 @@ int MemoryROPAccessHandler(PCB* pcb){
         pcb->pagetable[faultPage] = MemorySetupPte(newPage);
         //decrement refcounter
         page_refcounters[faultPhysPage] -=1;
+   }
+   printf("\nParent's Page Table of valid PTE's\n");
+   for(i = 0; i < MEM_L1TABLE_SIZE; i++) {
+    if(currentPCB->pagetable[i] & MEM_PTE_VALID) {
+        printf("PTE at index %d: 0x%x\n", i, currentPCB->pagetable[i]);
+    }
+   }
+   printf("\nChild's Page Table of valid PTE's\n");
+   for(i = 0; i < MEM_L1TABLE_SIZE; i++){
+    if(pcb->pagetable[i] & MEM_PTE_VALID) {
+        printf("PTE at index %d: 0x%x\n", i, pcb->pagetable[i]);
+    }
    }
 
    return MEM_SUCCESS;
